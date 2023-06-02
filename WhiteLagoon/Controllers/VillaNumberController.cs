@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using WhiteLagoon_DataAccess;
 using WhiteLagoon_Models;
+using WhiteLagoon_Models.ViewModels;
 
 namespace WhiteLagoon.Controllers
 {
@@ -14,30 +15,33 @@ namespace WhiteLagoon.Controllers
         }
         public IActionResult Index(int villaId)
         {
-            List<VillaNumber> villaNumberList = _context.VillaNumbers.Where(u=>u.VillaId==villaId).ToList();
+            List<VillaNumber> villaNumberList = _context.VillaNumbers.ToList();
             return View(villaNumberList);
         }
         public IActionResult Create()
         {
-            ViewBag.VillaList = _context.Villas.ToList().Select(u => new SelectListItem
+            VillaNumberVM villaNumberVM = new()
             {
-                Text = u.Name,
-                Value = u.Id.ToString()
-            });
-            return View();
+                VillaList = _context.Villas.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                })
+            };
+            return View(villaNumberVM);
         }
 
         [HttpPost]
-        public IActionResult Create(VillaNumber villaNumber)
+        public IActionResult Create(VillaNumberVM villaNumberVM)
         {
             if (ModelState.IsValid)
             {
-                _context.VillaNumbers.Add(villaNumber);
+                _context.VillaNumbers.Add(villaNumberVM.VillaNumber);
                 _context.SaveChanges();
                 TempData["success"] = "Villa Number Successfully";
                 return RedirectToAction(nameof(Index));
             }
-            return View(villaNumber);
+            return View(villaNumberVM);
         }
 
        

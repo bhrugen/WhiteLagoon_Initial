@@ -23,10 +23,17 @@ namespace WhiteLagoon.Controllers
         [HttpPost]
         public IActionResult Create(Villa obj)
         {
-            
+            if (obj.Name == obj.Description?.ToString())
+            {
+                ModelState.AddModelError("","The DisplayOrder cannot exactly match the Name.");
+            }
+            if (ModelState.IsValid)
+            {
                 _context.Villas.Add(obj);
                 _context.SaveChanges();
                 return RedirectToAction("Index");
+            }
+            return View(obj);
             
         }
     }

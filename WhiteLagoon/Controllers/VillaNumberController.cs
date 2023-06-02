@@ -50,6 +50,24 @@ namespace WhiteLagoon.Controllers
             return View(villaNumberVM);
         }
 
+        public IActionResult Update(int villaId)
+        {
+            VillaNumberVM villaNumberVM = new()
+            {
+                VillaList = _context.Villas.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                VillaNumber = _context.VillaNumbers.FirstOrDefault(u => u.Villa_Number == villaId)
+            };
+            if (villaNumberVM.VillaNumber==null)
+            {
+                return RedirectToAction("error", "home");
+            }
+            return View(villaNumberVM);
+        }
+
        
 
     }

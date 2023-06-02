@@ -16,5 +16,9 @@ namespace WhiteLagoon.Controllers
             List<Villa> villaList = _context.Villas.ToList();
             return View(villaList);
         }
+        public IActionResult Create()
+        {
+            return View();
+        }
     }
 }

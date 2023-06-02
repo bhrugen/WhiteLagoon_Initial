@@ -18,6 +18,7 @@ namespace WhiteLagoon.Controllers
         }
         public IActionResult Create()
         {
+            TempData["success"] = "Creating Villa";
             return View();
         }
         [HttpPost]
@@ -26,11 +27,15 @@ namespace WhiteLagoon.Controllers
             if (obj.Name == obj.Description?.ToString())
             {
                 ModelState.AddModelError("name","The DisplayOrder cannot exactly match the Name.");
+                TempData["error"] = "Error encountered";
+                //for eaxmple only
+                return RedirectToAction("Index");
             }
             if (ModelState.IsValid)
             {
                 _context.Villas.Add(obj);
                 _context.SaveChanges();
+                TempData["success"] = "Villa Created Successfully";
                 return RedirectToAction("Index");
             }
             return View(obj);
@@ -67,6 +72,7 @@ namespace WhiteLagoon.Controllers
                 return RedirectToAction("Error", "Home");
             }
             return View(obj);
+            
         }
         [HttpPost]
         public IActionResult Delete(Villa obj)
@@ -76,6 +82,7 @@ namespace WhiteLagoon.Controllers
                 {
                     _context.Villas.Remove(objFromDb);
                     _context.SaveChanges();
+
                     return RedirectToAction("Index");
                 }
             return View(obj);

@@ -49,7 +49,7 @@ namespace WhiteLagoon.Controllers
         [HttpPost]
         public IActionResult Update(Villa obj)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && obj.Id>0)
             {
                 _context.Villas.Update(obj);
                 _context.SaveChanges();

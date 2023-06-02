@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using WhiteLagoon_DataAccess;
 using WhiteLagoon_Models;
 using WhiteLagoon_Models.ViewModels;
@@ -15,7 +16,7 @@ namespace WhiteLagoon.Controllers
         }
         public IActionResult Index(int villaId)
         {
-            List<VillaNumber> villaNumberList = _context.VillaNumbers.ToList();
+            List<VillaNumber> villaNumberList = _context.VillaNumbers.Include(u=>u.Villa).ToList();
             return View(villaNumberList);
         }
         public IActionResult Create()
@@ -34,12 +35,17 @@ namespace WhiteLagoon.Controllers
         [HttpPost]
         public IActionResult Create(VillaNumberVM villaNumberVM)
         {
-            if (ModelState.IsValid)
+            bool isNumberUnique = _context.VillaNumbers.Where(u => u.Villa_Number == villaNumberVM.VillaNumber.Villa_Number).Count()==0;
+            if (ModelState.IsValid && isNumberUnique)
             {
                 _context.VillaNumbers.Add(villaNumberVM.VillaNumber);
                 _context.SaveChanges();
                 TempData["success"] = "Villa Number Successfully";
                 return RedirectToAction(nameof(Index));
+            }
+            if (!isNumberUnique)
+            {
+                TempData["error"] = "Villa number already exists. Please use a different villa number.";
             }
             return View(villaNumberVM);
         }

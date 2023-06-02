@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using WhiteLagoon_DataAccess;
 using WhiteLagoon_Models;
 
@@ -13,11 +14,16 @@ namespace WhiteLagoon.Controllers
         }
         public IActionResult Index(int villaId)
         {
-            List<VillaNumber> villaList = _context.VillaNumbers.Where(u=>u.VillaId==villaId).ToList();
-            return View(villaList);
+            List<VillaNumber> villaNumberList = _context.VillaNumbers.Where(u=>u.VillaId==villaId).ToList();
+            return View(villaNumberList);
         }
         public IActionResult Create()
         {
+            ViewData["VillaList"] = _context.Villas.ToList().Select(u => new SelectListItem
+            {
+                Text = u.Name,
+                Value = u.Id.ToString()
+            });
             return View();
         }
 

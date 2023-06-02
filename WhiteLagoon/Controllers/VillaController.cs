@@ -36,5 +36,12 @@ namespace WhiteLagoon.Controllers
             return View(obj);
             
         }
+
+        public IActionResult Update(int villaId)
+        {
+            Villa obj = _context.Villas.FirstOrDefault(x => x.Id == villaId);
+            return View(obj);
+        }
+       
     }
 }

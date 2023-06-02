@@ -4,21 +4,20 @@
     <div class="card-header bg-success bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Create Villa</h2>
+                <h2 class="text-white py-2">Update Villa</h2>
             </div>
         </div>
     </div>
     <div class="card-body border p-4">
         <form method="post" class="row">
             <div class=" p-3">
-                @*SHOW THIS WITH ALL EXAMPLES!   <div asp-validation-summary="ModelOnly"></div>*@
                 <div class="form-floating py-1 col-12">
                     <input asp-for="Name" class="form-control border shadow" />
                     <label asp-for="Name" class="ms-2"></label>
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-1 col-12">
-                    <textarea asp-for="Description" class="form-control border shadow" ></textarea>
+                    <textarea asp-for="Description" class="form-control border shadow"></textarea>
                     <label asp-for="Description" class="ms-2"></label>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
@@ -44,7 +43,7 @@
                 </div>
                 <div class="row pt-2">
                     <div class="col-6 col-md-3">
-                        <button type="submit" class="btn btn-success form-control">Create</button>
+                        <button type="submit" class="btn btn-success form-control">Update</button>
                     </div>
                     <div class="col-6 col-md-3">
                         <a asp-controller="Villa" asp-action="Index" class="btn btn-outline-secondary border  form-control">
@@ -52,8 +51,6 @@
                         </a>
                     </div>
                 </div>
-
-
             </div>
         </form>
     </div>

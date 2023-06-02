@@ -13,7 +13,7 @@ namespace WhiteLagoon.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Villa> villaList = _context.Villas;
+            List<Villa> villaList = _context.Villas.ToList();
             return View(villaList);
         }
     }

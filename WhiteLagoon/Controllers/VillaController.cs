@@ -20,5 +20,14 @@ namespace WhiteLagoon.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Create(Villa obj)
+        {
+            
+                _context.Villas.Add(obj);
+                _context.SaveChanges();
+                return RedirectToAction("Index");
+            
+        }
     }
 }

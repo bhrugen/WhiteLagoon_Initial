@@ -81,5 +81,40 @@ namespace WhiteLagoon.Controllers
             return View(villaNumberVM);
         }
 
+        public IActionResult Delete(int villaId)
+        {
+            VillaNumberVM villaNumberVM = new()
+            {
+                VillaList = _context.Villas.ToList().Select(u => new SelectListItem
+                {
+                    Text = u.Name,
+                    Value = u.Id.ToString()
+                }),
+                VillaNumber = _context.VillaNumbers.FirstOrDefault(u => u.Villa_Number == villaId)
+            };
+            if (villaNumberVM.VillaNumber == null)
+            {
+                return RedirectToAction("error", "home");
+            }
+            return View(villaNumberVM);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(VillaNumberVM villaNumberVM)
+        {
+            if (ModelState.IsValid)
+            {
+                VillaNumber? objFromDb = _context.VillaNumbers.FirstOrDefault(x => x.Villa_Number == villaNumberVM.VillaNumber.Villa_Number);
+                if (objFromDb != null)
+                {
+                    _context.VillaNumbers.Remove(objFromDb);
+                    _context.SaveChanges();
+                    TempData["success"] = "Villa Number Deleted Successfully";
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(villaNumberVM);
+        }
+
     }
 }

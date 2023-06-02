@@ -18,7 +18,6 @@ namespace WhiteLagoon.Controllers
         }
         public IActionResult Create()
         {
-            TempData["success"] = "Creating Villa";
             return View();
         }
         [HttpPost]
@@ -28,9 +27,7 @@ namespace WhiteLagoon.Controllers
             {
                 ModelState.AddModelError("name","The DisplayOrder cannot exactly match the Name.");
                 TempData["error"] = "Error encountered";
-                //for eaxmple only
-                return RedirectToAction("Index");
-            }
+             }
             if (ModelState.IsValid)
             {
                 _context.Villas.Add(obj);
@@ -58,6 +55,7 @@ namespace WhiteLagoon.Controllers
             {
                 _context.Villas.Update(obj);
                 _context.SaveChanges();
+                TempData["success"] = "Villa Updated Successfully";
                 return RedirectToAction("Index");
             }
             return View(obj);
@@ -82,8 +80,8 @@ namespace WhiteLagoon.Controllers
                 {
                     _context.Villas.Remove(objFromDb);
                     _context.SaveChanges();
-
-                    return RedirectToAction("Index");
+                TempData["success"] = "Villa Deleted Successfully";
+                return RedirectToAction("Index");
                 }
             return View(obj);
 

@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using WhiteLagoon.Data;
+using WhiteLagoon_DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
 

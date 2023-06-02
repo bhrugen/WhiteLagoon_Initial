@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace WhiteLagoon.Migrations
+namespace WhiteLagoon_DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class AddVillaToDb : Migration

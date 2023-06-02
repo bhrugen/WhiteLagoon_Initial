@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using WhiteLagoon.Models;
+using WhiteLagoon_Models;
 
-namespace WhiteLagoon.Data
+namespace WhiteLagoon_DataAccess
 {
     public class ApplicationDbContext : DbContext
     {

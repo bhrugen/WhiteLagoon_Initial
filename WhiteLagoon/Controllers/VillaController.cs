@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WhiteLagoon.Data;
-using WhiteLagoon.Models;
+using WhiteLagoon_DataAccess;
+using WhiteLagoon_Models;
 
 namespace WhiteLagoon.Controllers
 {

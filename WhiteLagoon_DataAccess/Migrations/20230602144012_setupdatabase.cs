@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace WhiteLagoon.Migrations
+namespace WhiteLagoon_DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class setupdatabase : Migration

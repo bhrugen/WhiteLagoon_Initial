@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace WhiteLagoon.Models
+namespace WhiteLagoon_Models
 {
     public class Villa
     {

@@ -66,11 +66,5 @@ namespace WhiteLagoon_DataAccess.Repository
             dbSet.Remove(entity);
         }
 
-        public void Save()
-        {
-            _db.SaveChanges();
-        }
-
-       
     }
 }

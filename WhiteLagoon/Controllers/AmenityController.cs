@@ -17,7 +17,7 @@ namespace WhiteLagoon.Controllers
         }
         public IActionResult Index()
         {
-            List<Amenity> AmenityList = _unitOfWork.Amenity.GetAll(includeProperties:"Villa").ToList();
+            List<Amenity> AmenityList = _unitOfWork.Amenity.GetAll(includeProperties:"Villa").OrderBy(u=>u.Villa.Name).ToList();
             return View(AmenityList);
         }
         public IActionResult Create()

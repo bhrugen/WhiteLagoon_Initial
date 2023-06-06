@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components;
-@model IEnumerable<Villa>
+@model WhiteLagoon_Models.ViewModels.HomeVM
+
 <div>
 <div id="carouselExampleIndicators" class="carousel slide">
     <div class="carousel-indicators">
@@ -30,14 +31,14 @@
             <div class="col-12 col-md-5  offset-md-1 pl-2  pr-2 pr-md-0">
                 <div class="form-group">
                     <label>Check In Date</label>
-                    <input  type="date"  class="form-control" />
+                    <input type="date" asp-for="CheckInDate" class="form-control" />
                 </div>
             </div>
 
             <div class="col-8 col-md-3 pl-2 pr-2">
                 <div class="form-group">
                     <label>No. of nights</label>
-                    <select class="form-select">
+                    <select class="form-select" asp-for="Nights">
                         @for (var i = 1; i <= 10; i++)
                         {
                             <option value="@i">@i</option>
@@ -57,7 +58,7 @@
 
         </div>
         <div class="row px-lg-5 m-lg-4 m-sm-0 px-sm-0" style="--bs-gutter-x:0">
-            @foreach (var villa in Model)
+            @foreach (var villa in Model.VillaList)
             {
                 <div class="p-4 col-md-12 col-lg-6">
                     <div class="row" style="border-radius:5px; border: 1px solid #aaa">
@@ -65,7 +66,12 @@
                             <img class="d-block w-100" style="border-radius:5px;" asp-append-version="true" src="@villa.ImageUrl" alt="First slide">
                         </div>
                         <div class="col-8">
-                            <p class="card-title text-warning" style="font-size:xx-large">@villa.Name</p>
+                            <div class="d-flex justify-content-between">
+                                <p class="card-title text-warning" style="font-size:xx-large">@villa.Name</p>
+                                <div class="pt-2">
+                                <a asp-action="Details" asp-route-villaId="@villa.Id" class="btn btn-sm btn-outline-success">Details</a>
+                                </div>
+                            </div>
                             <p class="card-text">
                                 @((MarkupString)villa.Description)
                             </p>
@@ -73,7 +79,10 @@
                         <div class="col-12">
                             <div class="row pb-3 pt-2">
                                 <div class="col-4">
-                                    <a href="" class="btn btn-success form-control btn-block">Book</a>
+                                    @if (Model.CheckInDate!=null)
+                                    {
+                                        <a href="" class="btn btn-success form-control btn-block">Book</a>
+                                    }
                                 </div>
                                 <div class="col-4">
                                     <span class="">Max Occupancy : @villa.Occupancy adults </span><br />

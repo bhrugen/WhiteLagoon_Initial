@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
+using WhiteLagoon_Models.ViewModels;
 
 namespace WhiteLagoon.Controllers
 {
@@ -14,8 +15,12 @@ namespace WhiteLagoon.Controllers
         }
         public IActionResult Index()
         {
-            List<Villa> villaList = _unitOfWork.Villa.GetAll().ToList();
-            return View(villaList);
+            HomeVM homeVM = new HomeVM()
+            {
+                VillaList = _unitOfWork.Villa.GetAll().ToList(),
+                Nights=1
+            };
+            return View(homeVM);
         }
 
         public IActionResult Privacy()

@@ -1,10 +1,10 @@
-﻿@model List<VillaNumber>
+﻿@model List<Amenity>
 
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-success bg-gradient ml-0 py-3">
         <div class="row">
             <div class="col-12 text-center">
-                <h2 class="text-white py-2">Villa List</h2>
+                <h2 class="text-white py-2">Amenity List</h2>
             </div>
         </div>
     </div>
@@ -13,8 +13,8 @@
             <div class="col-6">
             </div>
             <div class="col-6 text-end">
-                <a asp-controller="VillaNumber" asp-action="Create" class="btn btn-secondary">
-                    <i class="bi bi-plus-circle"></i>  Create New Villa Number
+                <a asp-controller="Amenity" asp-action="Create" class="btn btn-secondary">
+                    <i class="bi bi-plus-circle"></i>  Create New Amenity
                 </a>
             </div>
         </div>
@@ -22,14 +22,9 @@
         <table class="table table-bordered table-striped">
             <thead>
                 <tr>
+                    <th>Villa</th>
                     <th>
-                        Villa
-                    </th>
-                    <th>
-                        Villa Number
-                    </th>
-                    <th>
-                        Special Details
+                        Amenity
                     </th>
                     <th></th>
                 </tr>
@@ -39,16 +34,15 @@
                 {
                     <tr>
                         <td>@obj.Villa.Name</td>
-                        <td>@obj.Villa_Number</td>
                         <td>
-                            @obj.SpecialDetails
+                            @obj.Name
                         </td>
                         <td>
                             <div class="w-75 btn-group" role="group">
-                                <a asp-action="Update" asp-route-villaId="@obj.Villa_Number" class="btn btn-success mx-2">
+                                <a asp-action="Update" asp-route-villaId="@obj.Id" class="btn btn-success mx-2">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                <a asp-action="Delete" asp-route-villaId="@obj.Villa_Number" class="btn btn-danger mx-2">
+                                <a asp-action="Delete" asp-route-villaId="@obj.Id" class="btn btn-danger mx-2">
                                     <i class="bi bi-trash-fill"></i> Delete
                                 </a>
                             </div>

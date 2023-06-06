@@ -12,7 +12,7 @@ namespace WhiteLagoon_Models
     public class Amenity
     {
         [Key]
-        public int AmenityId { get; set; }
+        public int Id { get; set; }
 
         [ForeignKey("Villa")]
         public int VillaId { get; set; }

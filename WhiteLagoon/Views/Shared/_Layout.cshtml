@@ -12,7 +12,7 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light border-bottom box-shadow">
             <div class="container-fluid">
                 @*image does not work in villa update page*@
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><img src="/images/resort.png" style="width:35px" /></a>
@@ -44,8 +44,8 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div>
+        <main role="main" class="">
            <partial name="_Notification" />
             @RenderBody()
         </main>

@@ -20,4 +20,8 @@
     <ProjectReference Include="..\WhiteLagoon_Models\WhiteLagoon_Models.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\images\products\" />
+  </ItemGroup>
+
 </Project>

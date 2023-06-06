@@ -79,9 +79,17 @@
                         <div class="col-12">
                             <div class="row pb-3 pt-2">
                                 <div class="col-4">
-                                    @if (Model.CheckInDate!=null)
+                                    @if (Model.CheckInDate>= DateOnly.FromDateTime(DateTime.Now))
                                     {
-                                        <a href="" class="btn btn-success form-control btn-block">Book</a>
+                                        if (villa.IsAvailable)
+                                        {
+                                            <a href="" class="btn btn-success form-control btn-block">Book</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="" class="btn btn-outline-danger form-control btn-block">Sold Out</a>
+                                        }
+
                                     }
                                 </div>
                                 <div class="col-4">

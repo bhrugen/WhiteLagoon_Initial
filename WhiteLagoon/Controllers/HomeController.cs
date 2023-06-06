@@ -23,6 +23,26 @@ namespace WhiteLagoon.Controllers
             return View(homeVM);
         }
 
+        [HttpPost]
+        public IActionResult Index(HomeVM homeVM)
+        {
+
+
+
+
+            homeVM.VillaList = _unitOfWork.Villa.GetAll().ToList();
+            foreach(var villa in homeVM.VillaList)
+            {
+                //based on date get availability
+                if (villa.Id % 2 == 0)
+                {
+                    villa.IsAvailable = true;
+                }
+
+            }
+            return View(homeVM);
+        }
+
         public IActionResult Privacy()
         {
             return View();

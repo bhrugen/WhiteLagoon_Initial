@@ -29,9 +29,15 @@ namespace WhiteLagoon.Controllers
             _signInManager = signInManager;
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl = null)
         {
-            return View();
+            returnUrl ??= Url.Content("~/");
+            LoginVM loginVM = new()
+            {
+                ReturnUrl = returnUrl,
+            };
+            
+            return View(loginVM);
         }
 
         [HttpPost]

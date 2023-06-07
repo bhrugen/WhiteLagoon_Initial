@@ -30,7 +30,7 @@ namespace WhiteLagoon.Controllers
 
 
 
-            homeVM.VillaList = _unitOfWork.Villa.GetAll(includeProperties:"Amenity").ToList();
+            homeVM.VillaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity").ToList();
             foreach(var villa in homeVM.VillaList)
             {
                 //based on date get availability

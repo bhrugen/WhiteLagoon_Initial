@@ -16,6 +16,7 @@ namespace WhiteLagoon_DataAccess
         public DbSet<Villa> Villas { get; set; }
         public DbSet<VillaNumber> VillaNumbers { get; set; }
         public DbSet<Amenity> Amenities { get; set; }
+        public DbSet<BookingDetail> BookingDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

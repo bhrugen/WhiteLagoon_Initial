@@ -20,5 +20,8 @@ namespace WhiteLagoon_Models
         [Display(Name = "Password")]
         public required string Password { get; set; }
 
+        [Display(Name = "Remember me?")]
+        public bool RememberMe { get; set; }
+
     }
 }

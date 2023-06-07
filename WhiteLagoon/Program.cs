@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WhiteLagoon_DataAccess;
@@ -15,7 +16,12 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-
+//builder.Services.Configure<CookieAuthenticationOptions>(options =>
+//{
+//    options.LoginPath = new PathString("/[your-path]");
+//    options.AccessDeniedPath = new PathString("/[your-path]");
+//    options.LogoutPath = new PathString("/[your-path]");
+//});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -140,5 +140,10 @@ namespace WhiteLagoon.Controllers
             });
             return View(registerVM);
         }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

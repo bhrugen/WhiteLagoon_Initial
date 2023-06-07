@@ -28,7 +28,7 @@ namespace WhiteLagoon_Models
 
         [Required]
         public double TotalCost { get; set; }
-        
+        public int Nights { get; set; }
         public string Status { get; set; }
 
         [Required]

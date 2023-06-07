@@ -17,7 +17,7 @@ namespace WhiteLagoon.Controllers
         {
             HomeVM homeVM = new HomeVM()
             {
-                VillaList = _unitOfWork.Villa.GetAll().ToList(),
+                VillaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity").ToList(),
                 Nights=1
             };
             return View(homeVM);
@@ -30,7 +30,7 @@ namespace WhiteLagoon.Controllers
 
 
 
-            homeVM.VillaList = _unitOfWork.Villa.GetAll().ToList();
+            homeVM.VillaList = _unitOfWork.Villa.GetAll(includeProperties:"Amenity").ToList();
             foreach(var villa in homeVM.VillaList)
             {
                 //based on date get availability

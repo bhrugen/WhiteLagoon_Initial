@@ -21,6 +21,7 @@ namespace WhiteLagoon_DataAccess.Repository
 
         public void Update(Villa entity)
         {
+            entity.VillaAmenity = null;
             _db.Update(entity);
         }
 

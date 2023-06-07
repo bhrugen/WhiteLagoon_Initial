@@ -23,15 +23,28 @@ namespace WhiteLagoon.Controllers
             return View(homeVM);
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> Index(HomeVM homeVM)
+        //{
+        //    homeVM.VillaList = _unitOfWork.Villa.GetAll().ToList();
+        //    foreach (var villa in homeVM.VillaList)
+        //    {
+        //        //based on date get availability
+        //        if (villa.Id % 2 == 0)
+        //        {
+        //            villa.IsAvailable = true;
+        //        }
+
+        //    }
+        //    return View(homeVM);
+        //}
+
+
         [HttpPost]
-        public IActionResult Index(HomeVM homeVM)
+        public async Task<IActionResult> GetVillasByDate(HomeVM homeVM)
         {
-
-
-
-
             homeVM.VillaList = _unitOfWork.Villa.GetAll().ToList();
-            foreach(var villa in homeVM.VillaList)
+            foreach (var villa in homeVM.VillaList)
             {
                 //based on date get availability
                 if (villa.Id % 2 == 0)
@@ -40,8 +53,9 @@ namespace WhiteLagoon.Controllers
                 }
 
             }
-            return View(homeVM);
+            return PartialView("_VillasPartial",homeVM);
         }
+
         public IActionResult Details(int villaId)
         {
             DetailsVM detailsVM = new ()

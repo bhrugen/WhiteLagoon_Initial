@@ -11,9 +11,15 @@ namespace WhiteLagoon.Controllers
         {
             _unitOfWork = unitOfWork;
         }
-        public IActionResult Index(int villaId)
+        public IActionResult FinalizeBooking(int villaId, DateOnly checkInDate, int nights)
         {
-            BookingDetail booking = new();
+            BookingDetail booking = new()
+            {
+                Villa=_unitOfWork.Villa.Get(u=>u.Id==villaId, includeProperties: "VillaAmenity"),
+                CheckInDate=checkInDate,
+                Nights=nights,
+                CheckOutDate=checkInDate.AddDays(nights),
+            };
             return View(booking);
         }
     }

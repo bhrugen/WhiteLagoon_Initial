@@ -42,6 +42,8 @@ namespace WhiteLagoon.Controllers
             }
             return View(homeVM);
         }
+
+     
         public IActionResult Details(int villaId)
         {
             DetailsVM detailsVM = new ()

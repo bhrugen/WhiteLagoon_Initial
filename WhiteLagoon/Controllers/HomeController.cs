@@ -42,7 +42,15 @@ namespace WhiteLagoon.Controllers
             }
             return View(homeVM);
         }
-
+        public IActionResult Details(int villaId)
+        {
+            DetailsVM detailsVM = new ()
+            {
+                Villa= _unitOfWork.Villa.Get(u=>u.Id==villaId),
+                Nights = 1
+            };
+            return View(detailsVM);
+        }
         public IActionResult Privacy()
         {
             return View();

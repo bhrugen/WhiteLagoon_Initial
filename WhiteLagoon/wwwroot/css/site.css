@@ -21,7 +21,9 @@ body {
   margin-bottom: 60px;
 }
 
-
+.dataTables_filter {
+    margin-bottom: 15px;
+}
 
 /*#region Spinner */
 

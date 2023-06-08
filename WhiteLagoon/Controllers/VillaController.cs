@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using WhiteLagoon_DataAccess;
 using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
@@ -155,6 +156,43 @@ namespace WhiteLagoon.Controllers
             return View(obj);
 
         }
+        #region API CALLS
 
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            List<Villa> objVillaList = _unitOfWork.Villa.GetAll().ToList();
+            return Json(new { data = objVillaList });
+        }
+
+
+        [HttpDelete]
+        public IActionResult Delete(int? id)
+        {
+            var villaToBeDeleted = _unitOfWork.Villa.Get(u => u.Id == id);
+            if (villaToBeDeleted == null)
+            {
+                return Json(new { success = false, message = "Error while deleting" });
+            }
+
+            if (!string.IsNullOrEmpty(villaToBeDeleted.ImageUrl))
+            {
+                var oldImagePath =
+                       Path.Combine(_webHostEnvironment.WebRootPath, villaToBeDeleted.ImageUrl.TrimStart('\\'));
+                FileInfo file = new(oldImagePath);
+
+                if (file.Exists)
+                {
+                    file.Delete();
+                }
+            }
+
+            _unitOfWork.Villa.Remove(villaToBeDeleted);
+            _unitOfWork.Save();
+
+            return Json(new { success = true, message = "Delete Successful" });
+        }
+
+        #endregion
     }
 }

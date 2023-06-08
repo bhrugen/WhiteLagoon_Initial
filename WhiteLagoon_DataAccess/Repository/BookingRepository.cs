@@ -24,6 +24,15 @@ namespace WhiteLagoon_DataAccess.Repository
             _db.Update(entity);
         }
 
+        public void UpdateStatus(int bookingId, string orderStatus)
+        {
+            var orderFromDb = _db.BookingDetails.FirstOrDefault(u => u.Id == bookingId);
+            if (orderFromDb != null)
+            {
+                orderFromDb.Status = orderStatus;
+            }
+        }
+
         public void UpdateStripePaymentID(int id, string sessionId, string paymentIntentId)
         {
             var bookingFromDb = _db.BookingDetails.FirstOrDefault(u => u.Id == id);

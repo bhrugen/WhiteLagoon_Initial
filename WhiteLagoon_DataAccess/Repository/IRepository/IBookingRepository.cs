@@ -12,5 +12,6 @@ namespace WhiteLagoon_DataAccess.Repository.IRepository
     {
         void Update(BookingDetail entity);
         void UpdateStripePaymentID(int id, string sessionId, string paymentIntentId);
+        void UpdateStatus(int bookingId, string orderStatus);
     }
 }

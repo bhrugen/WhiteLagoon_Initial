@@ -56,7 +56,7 @@ namespace WhiteLagoon.Controllers
                 var domain = Request.Scheme + "://" + Request.Host.Value + "/";
                 var options = new SessionCreateOptions
                 {
-                    SuccessUrl = domain + $"booking/BookingConfirmation?id={bookingDetail.Id}",
+                    SuccessUrl = domain + $"booking/BookingConfirmation?bookingId={bookingDetail.Id}",
                     CancelUrl = domain + $"booking/finalizeBooking?villaId={bookingDetail.VillaId}&checkInDate={bookingDetail.CheckInDate}&nights={bookingDetail.Nights}",
                     LineItems = new List<SessionLineItemOptions>(),
                     Mode = "payment",
@@ -94,7 +94,22 @@ namespace WhiteLagoon.Controllers
         [Authorize]
         public IActionResult BookingConfirmation(int bookingId)
         {
-            
+            BookingDetail bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
+            if (bookingFromDb.Status == SD.StatusPending)
+            {
+                //this is a pending order
+
+                var service = new SessionService();
+                Session session = service.Get(bookingFromDb.StripeSessionId);
+
+                if (session.PaymentStatus.ToLower() == "paid")
+                {
+                    _unitOfWork.Booking.UpdateStripePaymentID(bookingId, session.Id, session.PaymentIntentId);
+                    _unitOfWork.Booking.UpdateStatus(bookingId, SD.StatusApproved);
+                    _unitOfWork.Save();
+                }
+
+            }
             return View(bookingId);
         }
     }

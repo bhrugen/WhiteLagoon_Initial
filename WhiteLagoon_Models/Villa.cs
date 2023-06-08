@@ -25,7 +25,7 @@ namespace WhiteLagoon_Models
 
 
         [NotMapped]
-        public bool IsAvailable { get; set; }
+        public bool IsAvailable { get; set; } = true;
         [ValidateNever]
         public IEnumerable<Amenity> VillaAmenity { get; set; }
     }

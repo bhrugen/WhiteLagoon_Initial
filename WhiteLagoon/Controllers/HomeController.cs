@@ -24,10 +24,10 @@ namespace WhiteLagoon.Controllers
         }
 
         [HttpPost]
-        public IActionResult GetVillasByDate(HomeVM homeVM)
+        public IActionResult GetVillasByDate(int nights, DateOnly checkInDate)
         {
-            homeVM.VillaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity").ToList();
-            foreach(var villa in homeVM.VillaList)
+            var villaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity").ToList();
+            foreach(var villa in villaList)
             {
                 //based on date get availability
                 if (villa.Id % 2 == 0)
@@ -36,6 +36,12 @@ namespace WhiteLagoon.Controllers
                 }
 
             }
+            HomeVM homeVM = new ()
+            {
+                CheckInDate = checkInDate,
+                VillaList = villaList,
+                Nights = nights
+            };
             return PartialView("_VillaList", homeVM);
         }
 

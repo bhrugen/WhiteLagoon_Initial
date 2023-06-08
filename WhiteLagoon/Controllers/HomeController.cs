@@ -24,12 +24,8 @@ namespace WhiteLagoon.Controllers
         }
 
         [HttpPost]
-        public IActionResult Index(HomeVM homeVM)
+        public IActionResult GetVillasByDate(HomeVM homeVM)
         {
-
-
-
-
             homeVM.VillaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity").ToList();
             foreach(var villa in homeVM.VillaList)
             {
@@ -40,10 +36,12 @@ namespace WhiteLagoon.Controllers
                 }
 
             }
-            return View(homeVM);
+            return PartialView("_VillaList", homeVM);
         }
 
-     
+
+
+
         public IActionResult Details(int villaId)
         {
             DetailsVM detailsVM = new ()

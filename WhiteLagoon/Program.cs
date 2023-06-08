@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Stripe;
 using WhiteLagoon_DataAccess;
 using WhiteLagoon_DataAccess.Repository;
 using WhiteLagoon_DataAccess.Repository.IRepository;
@@ -23,7 +24,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //    options.LogoutPath = new PathString("/[your-path]");
 //});
 var app = builder.Build();
-
+StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

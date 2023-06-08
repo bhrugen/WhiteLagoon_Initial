@@ -41,6 +41,7 @@ namespace WhiteLagoon_Models
         public bool IsPaymentSuccessful { get; set; } = false;
         public string? StripeSessionId { get; set; }
         public string? StripePaymentIntentId { get; set; }
+        public DateTime? PaymentDate { get; set; }
 
         public DateTime ActualCheckInDate { get; set; }
         public DateTime ActualCheckOutDate { get; set; }

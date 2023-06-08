@@ -6,10 +6,17 @@
 
         <div class="col-12 col-lg-7 p-4 2 mt-4 mt-md-0">
             <div class="row p-1 my-1 " style="border-radius:20px; ">
-                <div class="col-12">
+                <div class="col-6">
                     <h3 class="text-success">Villa Details</h3>
-                    <hr />
+                    
+                    
                 </div>
+                <div class="text-end col-6 ">
+                    <a class="btn btn-sm btn-outline-danger" style="width:200px;"
+                   asp-controller="Home"  asp-action="Index">Modify Selection</a>
+                </div>
+                <hr />
+
                 <div class="col-12 col-md-5">
                     <img src="@Model.Villa.ImageUrl" style="border-radius:10px;" width="100%" />
                 </div>
@@ -55,6 +62,9 @@
             <form method="post">
                 <input asp-for="VillaId" hidden/>
                 <input asp-for="UserId" hidden />
+                <input asp-for="CheckInDate" hidden />
+                <input asp-for="CheckOutDate" hidden />
+                <input asp-for="Nights" hidden />
                 <div class="row pt-1 mt-1 " style="border-radius:20px; ">
                     <div class="col-12">
                         <h3 class="text-success">Enter Booking Details</h3>
@@ -76,15 +86,15 @@
                 </div>
                 <div class="form-group pt-2">
                     <label class="text-warning">Check in Date</label>
-                    <input asp-for="CheckInDate" class="form-control" />
+                    <input asp-for="CheckInDate" disabled class="form-control" />
                 </div>
                 <div class="form-group pt-2">
                     <label class="text-warning">Check Out Date</label>
-                    <input asp-for="CheckOutDate" class="form-control" />
+                    <input asp-for="CheckOutDate" disabled class="form-control" />
                 </div>
                 <div class="form-group pt-2">
                     <label class="text-warning">No. of nights</label>
-                    <input asp-for="Nights" class="form-control" />
+                    <input asp-for="Nights" disabled class="form-control" />
                 </div>
                 <div class="form-group pt-2">
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe.Checkout;
 using System.Security.Claims;
 using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
@@ -48,7 +49,47 @@ namespace WhiteLagoon.Controllers
             _unitOfWork.Booking.Add(bookingDetail);
             _unitOfWork.Save();
 
-            return RedirectToAction(nameof(BookingConfirmation), new { bookingId = bookingDetail.Id });
+
+
+                //it is a regular customer account and we need to capture payment
+                //stripe logic
+                var domain = Request.Scheme + "://" + Request.Host.Value + "/";
+                var options = new SessionCreateOptions
+                {
+                    SuccessUrl = domain + $"booking/BookingConfirmation?id={bookingDetail.Id}",
+                    CancelUrl = domain + $"booking/finalizeBooking?villaId={bookingDetail.VillaId}&checkInDate={bookingDetail.CheckInDate}&nights={bookingDetail.Nights}",
+                    LineItems = new List<SessionLineItemOptions>(),
+                    Mode = "payment",
+                };
+
+            options.LineItems.Add(new SessionLineItemOptions
+            {
+                PriceData = new SessionLineItemPriceDataOptions
+                {
+                    UnitAmount = (long)(bookingDetail.TotalCost * 100), // $20.50 => 2050
+                    Currency = "usd",
+                    ProductData = new SessionLineItemPriceDataProductDataOptions
+                    {
+                        Name = villa.Name,
+                        //Images = new List<string>()
+                        //        {
+                        //            Request.Scheme + "://" + Request.Host.Value + villa.ImageUrl.Replace('\\','/')
+                        //        },
+                        
+                    }
+                    
+                },
+                Quantity=1
+            });
+
+
+                var service = new SessionService();
+                Session session = service.Create(options);
+                _unitOfWork.Booking.UpdateStripePaymentID(bookingDetail.Id, session.Id, session.PaymentIntentId);
+                _unitOfWork.Save();
+                Response.Headers.Add("Location", session.Url);
+                return new StatusCodeResult(303);
+
         }
         [Authorize]
         public IActionResult BookingConfirmation(int bookingId)

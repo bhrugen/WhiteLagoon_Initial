@@ -11,6 +11,6 @@ namespace WhiteLagoon_DataAccess.Repository.IRepository
     public interface IBookingRepository : IRepository<BookingDetail>
     {
         void Update(BookingDetail entity);
-        //public Task<bool> IsRoomBooked(int RoomId, string checkInDate, string checkOutDate);
+        void UpdateStripePaymentID(int id, string sessionId, string paymentIntentId);
     }
 }

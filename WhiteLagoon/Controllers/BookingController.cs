@@ -35,9 +35,10 @@ namespace WhiteLagoon.Controllers
                 UserId=userId,
                 Phone = user.PhoneNumber,
             Email = user.Email,
-            Name = user.Name
+            Name = user.Name,
+            
         };
-          
+            booking.TotalCost = booking.Villa.Price * nights;
             return View(booking);
         }
         [Authorize]

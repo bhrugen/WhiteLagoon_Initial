@@ -8,70 +8,37 @@
             <div class="row p-1 my-1 " style="border-radius:20px; ">
                 <div class="col-6">
                     <h3 class="text-success">Villa Details</h3>
-                    
-                    
                 </div>
                 <div class="text-end col-6 ">
                     <a class="btn btn-sm btn-outline-danger" style="width:200px;"
-                   asp-controller="Home"  asp-action="Index">Modify Selection</a>
+                       asp-controller="Home" asp-action="Index"><i class="bi bi-arrow-left-square"></i> &nbsp; Modify Selection</a>
                 </div>
                 <hr />
-
-                <div class="col-12 col-md-5">
-                    <img src="@Model.Villa.ImageUrl" style="border-radius:10px;" width="100%" />
-                </div>
-                <div class="col-12 col-md-7">
-                    <div class="row p-2">
-                        <div class="col-12">
-                            <p class="card-title text-warning" style="font-size:xx-large">@Model.Villa.Name</p>
-                            <p class="card-text" style="font-size:large">
-                                @((MarkupString)Model.Villa.Description)
-                            </p>
-                            @if (Model.Villa.VillaAmenity != null && Model.Villa.VillaAmenity.Count() > 0)
-                            {
-                                <p class="h5 text-white">Villa Amenities</p>
-                                <ul>
-                                    @foreach (var amenity in Model.Villa.VillaAmenity)
-                                    {
-                                        <li>
-                                            @amenity.Name
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                        </div>
-                    </div>
-                    <div class="row col-12">
-                        <span class="text-end p-0 pt-3 m-0">
-                            <span class="float-right">Max Occupancy : @Model.Villa.Occupancy adults </span><br />
-                            <span class="float-right pt-1">Villa Size : @Model.Villa.Sqft sqft</span><br />
-                            <h4 class="text-warning font-weight-bold pt-5">
-                                USD
-                                <span style="border-bottom:1px solid #ff6a00">
-                                    @Model.Villa.Price.ToString("#,#.00#;(#,#.00#)") / night
-                                </span>
-                            </h4>
+                <partial name="_VillaDetail" model="@Model.Villa" />
+                <hr />
+                <div class="text-end">
+                    <h4 class="text-danger font-weight-bold ">
+                        Booking Total :
+                        <span style="border-bottom:1px solid #ff6a00">
+                            @Model.TotalCost.ToString("c")
                         </span>
-                    </div>
+                    </h4>
                 </div>
-
-
             </div>
         </div>
-        <div class="col-12 col-lg-5 p-4 2 mt-4 mt-md-0">
+        <div class="col-12 col-lg-5 p-4 2 mt-4 mt-md-0" style="border-left:1px solid #aaa">
             <form method="post">
-                <input asp-for="VillaId" hidden/>
+                <input asp-for="VillaId" hidden />
                 <input asp-for="UserId" hidden />
                 <input asp-for="CheckInDate" hidden />
                 <input asp-for="CheckOutDate" hidden />
                 <input asp-for="Nights" hidden />
-                <div class="row pt-1 mt-1 " style="border-radius:20px; ">
+                <div class="row pt-1 mb-3 " style="border-radius:20px; ">
                     <div class="col-12">
                         <h3 class="text-success">Enter Booking Details</h3>
-                        <hr />
                     </div>
                 </div>
-                
+
                 <div class="form-group pt-0">
                     <label class="text-warning">Name</label>
                     <input asp-for="Name" class="form-control" />
@@ -96,7 +63,7 @@
                     <label class="text-warning">No. of nights</label>
                     <input asp-for="Nights" disabled class="form-control" />
                 </div>
-                <div class="form-group pt-2">
+                <div class="form-group pt-2 pt-md-4">
 
                     @if (!Model.Villa.IsAvailable)
                     {

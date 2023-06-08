@@ -4,6 +4,7 @@ using Stripe.Checkout;
 using System.Security.Claims;
 using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
+using WhiteLagoon_Models.ViewModels;
 using WhiteLagoon_Utility;
 
 namespace WhiteLagoon.Controllers
@@ -126,6 +127,37 @@ namespace WhiteLagoon.Controllers
 
             }
             return View(bookingId);
+        }
+
+        [HttpPost]
+        //[Authorize(Roles = SD.Role_Admin + "," + SD.Role_Employee)]
+        [Authorize(Roles = SD.Role_Admin)]
+        public IActionResult CheckIn(BookingDetail bookingDetail)
+        {
+            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCheckedIn);
+            _unitOfWork.Save();
+            TempData["Success"] = "Booking Updated Successfully.";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = bookingDetail.Id});
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
+        public IActionResult CheckOut(BookingDetail bookingDetail)
+        {
+            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCompleted);
+            _unitOfWork.Save();
+            TempData["Success"] = "Booking Updated Successfully.";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = bookingDetail.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SD.Role_Admin)]
+        public IActionResult CancelBooking(BookingDetail bookingDetail)
+        {
+            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCancelled);
+            _unitOfWork.Save();
+            TempData["Success"] = "Booking Updated Successfully.";
+            return RedirectToAction(nameof(BookingDetails), new { bookingId = bookingDetail.Id });
         }
 
         #region API CALLS

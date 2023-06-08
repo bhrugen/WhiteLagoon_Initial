@@ -14,6 +14,7 @@ namespace WhiteLagoon_DataAccess.Repository
         public IAmenityRepository Amenity { get; private set; }
         public IVillaNumberRepository VillaNumber { get; private set; }
         public IBookingRepository Booking { get; private set; }
+        public IUserRepository User { get; private set; }
         public UnitOfWork(ApplicationDbContext db)
         {
             _db = db;
@@ -21,6 +22,7 @@ namespace WhiteLagoon_DataAccess.Repository
             VillaNumber = new VillaNumberRepository(_db);
             Amenity = new AmenityRepository(_db);
             Booking = new BookingRepository(_db);
+            User = new UserRepository(_db);
         }
 
         public void Save()

@@ -24,7 +24,7 @@ namespace WhiteLagoon_Models
         public string Name { get; set; }
         [Required]
         public string Email { get; set; }
-        public string Phone { get; set; }
+        public string? Phone { get; set; }
 
         [Required]
         public double TotalCost { get; set; }
@@ -39,8 +39,8 @@ namespace WhiteLagoon_Models
         public DateOnly CheckOutDate { get; set; }
 
         public bool IsPaymentSuccessful { get; set; } = false;
-        public string StripeSessionId { get; set; }
-        public string StripePaymentIntentId { get; set; }
+        public string? StripeSessionId { get; set; }
+        public string? StripePaymentIntentId { get; set; }
 
         public DateTime ActualCheckInDate { get; set; }
         public DateTime ActualCheckOutDate { get; set; }

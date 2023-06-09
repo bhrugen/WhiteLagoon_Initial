@@ -103,6 +103,7 @@ namespace WhiteLagoon.Controllers
                 NormalizedEmail=registerVM.Email.ToUpper(),
                 EmailConfirmed=true,
                 UserName = registerVM.Email,
+                CreatedAt = DateTime.Now
             };
             var result = await _userManager.CreateAsync(user, registerVM.Password);
 

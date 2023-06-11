@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe.Checkout;
+using Stripe.Terminal;
 using System.Security.Claims;
+using System.Text;
 using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
 using WhiteLagoon_Models.ViewModels;
 using WhiteLagoon_Utility;
+using WhiteLagoon_Utility.Helper.Email;
 
 namespace WhiteLagoon.Controllers
 {
@@ -96,6 +99,8 @@ namespace WhiteLagoon.Controllers
                 _unitOfWork.Booking.UpdateStripePaymentID(bookingDetail.Id, session.Id, session.PaymentIntentId);
                 _unitOfWork.Save();
                 Response.Headers.Add("Location", session.Url);
+
+                //BookingConfirmation(bookingDetail.Email); // Enable when email is configured
                 return new StatusCodeResult(303);
 
         }
@@ -193,5 +198,22 @@ namespace WhiteLagoon.Controllers
 
 
         #endregion
+
+        public bool BookingConfirmation(string EmailTo)
+        {
+            StringBuilder bookedTemplate = new StringBuilder();
+            bookedTemplate.Append("<h4 style='text-align:center;'><img src='https://cdn.logojoy.com/wp-content/uploads/2018/05/01112536/5_big12.png' width='89' height='25' alt='eTracker'></h4>");
+            bookedTemplate.Append("<p style='margin-left:15px;'>You booking has been confirmed.</p>");
+            bookedTemplate.Append("<p style='margin-left:15px;'>Now you can manage your booking.</p>");
+            bookedTemplate.Append("<p><h4 style='margin-left:15px;'>Thank You<h4><p>");
+
+
+            EmailData data = new EmailData();
+            data.To = EmailTo;
+            data.Subject = "Booking Confirmation";
+            data.Body = bookedTemplate.ToString();
+
+            return SendMail.CommonMailFormat(data);
+        }
     }
 }

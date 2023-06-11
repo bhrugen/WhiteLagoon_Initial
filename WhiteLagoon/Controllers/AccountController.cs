@@ -8,6 +8,9 @@ using System.Text;
 using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
 using WhiteLagoon_Utility;
+using WhiteLagoon_Utility.Helper.Email;
+using WhiteLagoon_Models.ViewModels;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WhiteLagoon.Controllers
 {
@@ -17,16 +20,19 @@ namespace WhiteLagoon.Controllers
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly string _rootDirectory;
 
         public AccountController(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             SignInManager<ApplicationUser> signInManager,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IHostingEnvironment env)
         {
             _unitOfWork = unitOfWork;
             _roleManager = roleManager;
             _userManager = userManager;
             _signInManager = signInManager;
+            _rootDirectory = env.WebRootPath;
         }
 
         public IActionResult Login(string returnUrl = null)
@@ -95,6 +101,7 @@ namespace WhiteLagoon.Controllers
         [HttpPost]
         public async Task<IActionResult> Register(RegisterVM registerVM)
         {
+
             ApplicationUser user = new()
             {
                 Name = registerVM.Name,
@@ -109,6 +116,7 @@ namespace WhiteLagoon.Controllers
 
             if (result.Succeeded)
             {
+                //SendConfirmationMail(registerVM.Email); // Enable when email is configured
 
                 if (!String.IsNullOrEmpty(registerVM.Role))
                 {
@@ -119,7 +127,7 @@ namespace WhiteLagoon.Controllers
                     await _userManager.AddToRoleAsync(user, SD.Role_Customer);
                 }
 
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                await _signInManager.SignInAsync(user, isPersistent: false);
                 if (string.IsNullOrEmpty(registerVM.ReturnUrl))
                 {
                     return RedirectToAction("Index", "Home");
@@ -145,6 +153,20 @@ namespace WhiteLagoon.Controllers
         public IActionResult AccessDenied()
         {
             return View();
+        }
+
+
+        public bool SendConfirmationMail(string EmailTo)
+        {
+            string filePath = Path.Combine(_rootDirectory, "template", "email", "SignupConfirmation.html");
+            StreamReader reader = new StreamReader(filePath);
+
+            EmailData data = new EmailData();
+            data.To = EmailTo;
+            data.Subject = "Registration Successful";
+            data.Template = reader;
+
+            return SendMail.AutoSignupMail(data);
         }
     }
 }

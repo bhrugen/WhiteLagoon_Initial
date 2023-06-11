@@ -35,11 +35,12 @@ namespace WhiteLagoon.Controllers
                 CheckOutDate=checkInDate.AddDays(nights),
                 UserId=userId,
                 Phone = user.PhoneNumber,
-            Email = user.Email,
-            Name = user.Name,
+                Email = user.Email,
+                Name = user.Name,
             
-        };
+            };
             booking.TotalCost = booking.Villa.Price * nights;
+            booking.VillaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == villaId).ToList();
             return View(booking);
         }
         [Authorize]

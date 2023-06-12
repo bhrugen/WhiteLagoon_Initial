@@ -1,0 +1,86 @@
+﻿@using WhiteLagoon.Helper;
+
+<div class="card">
+    <div class="card-body">
+        <div class="float-end mt-2">
+            <div id="total-revenue-chart" data-colors='["--bs-primary"]'> </div>
+        </div>
+        <div>
+            <p class="text-muted mb-0">Total Revenue</p>
+            <h4 class="mb-1 mt-1"><span data-plugin="counterup" id="spnTotalRevenueCount"></span></h4>
+        </div>
+        <p class="text-muted mt-3 mb-0" id="sectionRevenueRatio"></p>
+    </div>
+</div>
+
+@Html.PartialSectionScripts(
+    @<script>
+             $(document).ready(function () {
+                 // Get the dynamic data from the server
+                 fetch('@Url.Action("GetTotalRevenueChartData","Dashboard")')
+                     .then(response => response.json())
+                     .then(data => {
+                         document.querySelector("#spnTotalRevenueCount").innerHTML = data.totalCount;
+
+                         var sectionRevenueRatioHtml = document.createElement("span");
+                         if (data.isRatioIncrease) {
+                             sectionRevenueRatioHtml.className = "text-success me-1";
+                             sectionRevenueRatioHtml.innerHTML = "<i class='bi bi-arrow-up-right-circle me-1'></i><span>" + data.increaseDecreaseRatio + "%</span>";
+                         }
+                         else {
+                             sectionRevenueRatioHtml.className = "text-danger me-1";
+                             sectionRevenueRatioHtml.innerHTML = "<i class='bi bi-arrow-down-right-circle me-1'></i><span>" + data.increaseDecreaseRatio + "%</span>";
+                         }
+                         document.querySelector("#sectionRevenueRatio").append(sectionRevenueRatioHtml);
+                         document.querySelector("#sectionRevenueRatio").append("since last month");
+
+                         loadTotalRevenueRadialBarChart("total-revenue-chart", data);
+                     });
+             });
+
+             // Function to load the RadialBar chart
+             function loadTotalRevenueRadialBarChart(id, data) {
+
+                 var chartColors = getChartColorsArray(id);
+                 var options = {
+                     fill: {
+                         colors: chartColors,
+                     },
+                     chart: {
+                         type: 'radialBar',
+                         width: 90,
+                         height: 90,
+                         sparkline: {
+                             enabled: true
+                         },
+                         offsetY: -10,
+                     },
+                     series: data.series,
+                     plotOptions: {
+                         radialBar: {
+                             hollow: {
+                                 margin: 0,
+                                 size: "50%"
+                             },
+                             dataLabels: {
+                                 showOn: "always",
+                                 enabled: true,
+                                 value: {
+                                     offsetY: -10,
+                                     color: chartColors[0],
+                                     show: true
+                                 }
+                             }
+                         }
+                     },
+                     stroke: {
+                         lineCap: "round",
+                     },
+                     labels: [""]
+                 };
+
+                 var chart = new ApexCharts(document.querySelector("#" + id), options);
+                 chart.render();
+             }
+    </script>
+)

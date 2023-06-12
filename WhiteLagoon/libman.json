@@ -5,6 +5,10 @@
     {
       "library": "jquery-ajax-unobtrusive@3.2.6",
       "destination": "wwwroot/jquery-ajax-unobtrusive/"
+    },
+    {
+      "library": "apexcharts@3.41.0",
+      "destination": "wwwroot/lib/ApexChart"
     }
   ]
 }

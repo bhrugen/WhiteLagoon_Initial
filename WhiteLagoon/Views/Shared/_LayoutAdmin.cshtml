@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using WhiteLagoon.Helper;
+<!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="utf-8" />
@@ -14,6 +15,8 @@
     <link rel="stylesheet" href="~/WhiteLagoon.styles.css" asp-append-version="true" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" />
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.3/css/jquery.dataTables.min.css" />
+    
+    <link rel="stylesheet" href="~/lib/ApexChart/apexcharts.min.css" />
 
 </head>
 <body>
@@ -125,6 +128,12 @@
     <script src="~/jquery-ajax-unobtrusive/jquery.unobtrusive-ajax.js"></script>
     <script src="//cdn.datatables.net/1.13.3/js/jquery.dataTables.min.js" asp-append-version="true"></script>
 
+    <script src="~/js/chart.js" asp-append-version="true"></script>
+
+    <!-- apexcharts -->
+    <script src="~/lib/ApexChart/apexcharts.min.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+    @Html.RenderPartialSectionScripts()
 </body>
 </html>

@@ -52,7 +52,7 @@ namespace WhiteLagoon.Controllers
                 {
                     ///Check if the logged-in user role is admin then redirect to the dashboard page.
                     var user = await _userManager.FindByNameAsync(loginVM.Email);
-                    if (user != null && await _userManager.IsInRoleAsync(user, "Admin"))
+                    if (user != null && await _userManager.IsInRoleAsync(user, SD.Role_Admin))
                     {
                         return RedirectToAction("Index", "Dashboard");
                     }

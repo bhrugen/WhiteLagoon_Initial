@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace WhiteLagoon_Models.ViewModels
 {
-    public class DashboardRadialBarChartVM
+    public class DashboardPieChartVM
     {
-        public decimal TotalCount { get; set; }
-        public decimal IncreaseDecreaseRatio { get; set; }
-        public bool IsRatioIncrease { get; set; }
         public decimal[] Series { get; set; }
+        public string[] Labels { get; set; }
     }
 }

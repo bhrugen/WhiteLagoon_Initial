@@ -1,0 +1,84 @@
+﻿@using WhiteLagoon.Helper;
+
+<div class="card">
+    <div class="card-body">
+        <div>
+            <p class="text-muted mb-0">New Members And Bookings In Past 30 Days</p>
+        </div>
+        <div id="new_members_and_bookings_chart" data-colors='["--bs-primary", "--bs-warning"]'></div>
+
+        <div class="justify-content-center text-center chart-spinner" style="display:none">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+@Html.PartialSectionScripts(
+    @<script>
+             $(document).ready(function () {
+                 $(".chart-spinner").show();
+
+                 // Get the dynamic data from the server
+                 fetch('@Url.Action("GetMemberAndBookingChartData","Dashboard")')
+                     .then(response => response.json())
+                     .then(data => {
+                         loadMemberAndBookingsLineChart("new_members_and_bookings_chart", data);
+
+                         $(".chart-spinner").hide();
+                     });
+             });
+
+             // Function to load the Line chart
+             function loadMemberAndBookingsLineChart(id, data) {
+                 var chartColors = getChartColorsArray(id);
+                 // Chart options
+                 var options = {
+                     fill: {
+                         colors: chartColors,
+                     },
+                     chart: {
+                         type: 'line',
+                         height: 350
+                     },
+                     stroke: {
+                         curve: 'smooth',
+                     },
+                     dataLabels: {
+                         enabled: false,
+                     },
+                     series: data.series,
+                     xaxis: {
+                         categories: data.categories,
+                         labels: {
+                             style: {
+                                 colors: "#fff",
+                             },
+                         }
+                     },
+                     yaxis: {
+                         labels: {
+                             style: {
+                                 colors: "#fff",
+                             },
+                         }
+                     },
+                     legend: {
+                         position: 'bottom',
+                         labels: {
+                             colors: "#fff",
+                             useSeriesColors: false
+                         },
+                     },
+                     markers: {
+                         size: 5
+                     }
+                 };
+
+                 // Create the line chart
+                 var chart = new ApexCharts(document.querySelector("#" + id), options);
+                 chart.render();
+             }
+    </script>
+)

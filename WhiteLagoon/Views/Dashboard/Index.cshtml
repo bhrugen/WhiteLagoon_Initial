@@ -26,52 +26,10 @@
 
     <div class="row">
         <div class="col-md-6 col-xl-8 mt-2">
-            <div class="card">
-                <div class="card-body">
-                    @* <div class="float-end">
-                    <div class="dropdown">
-                    <a class="dropdown-toggle text-reset" href="#" id="dropdownMenuButton5"
-                    data-bs-toggle="dropdown" aria-haspopup="true"
-                    aria-expanded="false">
-                    <span class="fw-semibold">Sort By:</span> <span class="text-muted">Yearly<i class="mdi mdi-chevron-down ms-1"></i></span>
-                    </a>
-
-                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton5">
-                    <a class="dropdown-item" href="#">Monthly</a>
-                    <a class="dropdown-item" href="#">Yearly</a>
-                    <a class="dropdown-item" href="#">Weekly</a>
-                    </div>
-                    </div>
-                    </div>
-                    <h4 class="card-title mb-4">Sales Analytics</h4>
-
-                    <div class="mt-1">
-                    <ul class="list-inline main-chart mb-0">
-                    <li class="list-inline-item chart-border-left me-0 border-0">
-                    <h3 class="text-primary">$<span data-plugin="counterup">2,371</span><span class="text-muted d-inline-block font-size-15 ms-3">Income</span></h3>
-                    </li>
-                    <li class="list-inline-item chart-border-left me-0">
-                    <h3>
-                    <span data-plugin="counterup">258</span><span class="text-muted d-inline-block font-size-15 ms-3">Sales</span>
-                    </h3>
-                    </li>
-                    <li class="list-inline-item chart-border-left me-0">
-                    <h3><span data-plugin="counterup">3.6</span>%<span class="text-muted d-inline-block font-size-15 ms-3">Conversation Ratio</span></h3>
-                    </li>
-                    </ul>
-                    </div>
-
-                    <div class="mt-3">
-                    <div id="sales-analytics-chart" data-colors='["--bs-primary", "#dfe2e6", "--bs-warning"]' class="apex-charts" dir="ltr"></div>
-                    </div> *@
-                </div>
-            </div>
+            <partial name="_MembersAndBookingsChart" />
         </div>
         <div class="col-md-6 col-xl-4 mt-2">
-            <div class="card">
-                <div class="card-body">
-                </div>
-            </div>
+            <partial name="_CustomerBookingChart" />
         </div>
     </div>
 </div>

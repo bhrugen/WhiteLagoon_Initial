@@ -7,6 +7,7 @@ using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
 using WhiteLagoon_Models.ViewModels;
 using WhiteLagoon_Utility;
+using System.Linq;
 
 namespace WhiteLagoon.Controllers
 {
@@ -34,7 +35,11 @@ namespace WhiteLagoon.Controllers
         {
             var villaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity").ToList();
 
-            var bookedVillas = _unitOfWork.Booking.GetAll().Where(m => m.CheckInDate == checkInDate).ToList();
+            var VillaNumumbers = _unitOfWork.VillaNumber.GetAll().ToList();
+
+            var bookedVillas = _unitOfWork.Booking.GetAll().Where(m => (m.CheckInDate <= checkInDate && m.CheckOutDate >= checkInDate) &&
+                               (_bookedStatus.Any(i => i.ToString() == m.Status))).ToList();
+
 
             if (bookedVillas.Count()  > 0)
             {
@@ -42,7 +47,13 @@ namespace WhiteLagoon.Controllers
                 {
                     foreach (var item in bookedVillas)
                     {
-                        if (_bookedStatus.Contains(item.Status) && villa.Id == item.VillaId)
+                        var isToBeCheckout = bookedVillas.Where(m => villa.Id == item.VillaId && m.CheckOutDate == checkInDate).ToList();
+
+                        var filteredVillas = bookedVillas.Where(m => m.VillaId == item.VillaId).ToList();
+
+                        var totAvailVillas = (VillaNumumbers.Where(m => m.VillaId == item.VillaId).Count() - filteredVillas.Count()) + isToBeCheckout.Count();
+
+                        if (totAvailVillas == 0 && villa.Id == item.VillaId)
                         {
                             villa.IsAvailable = false;
                         }

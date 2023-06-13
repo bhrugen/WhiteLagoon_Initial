@@ -9,11 +9,13 @@ using WhiteLagoon_Models;
 using WhiteLagoon_Models.ViewModels;
 using WhiteLagoon_Utility;
 using WhiteLagoon_Utility.Helper.Email;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WhiteLagoon.Controllers
 {
     public class BookingController : Controller
     {
+        private readonly List<string> _bookedStatus = new List<string> { "Approved", "CheckedIn" };
         private readonly IUnitOfWork _unitOfWork;
         public BookingController(IUnitOfWork unitOfWork)
         {
@@ -25,7 +27,7 @@ namespace WhiteLagoon.Controllers
         }
 
         [Authorize]
-        public IActionResult FinalizeBooking(int villaId, DateOnly checkInDate, int nights)
+        public IActionResult FinalizeBooking(int villaId, string checkInDate, int nights)
         {
             var claimsIdentity = (ClaimsIdentity)User.Identity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
@@ -33,9 +35,9 @@ namespace WhiteLagoon.Controllers
             BookingDetail booking = new()
             {
                 Villa=_unitOfWork.Villa.Get(u=>u.Id==villaId, includeProperties: "VillaAmenity"),
-                CheckInDate=checkInDate,
+                CheckInDate=DateOnly.FromDateTime(Convert.ToDateTime(checkInDate)),
                 Nights=nights,
-                CheckOutDate=checkInDate.AddDays(nights),
+                CheckOutDate= DateOnly.FromDateTime(Convert.ToDateTime(checkInDate)).AddDays(nights),
                 UserId=userId,
                 Phone = user.PhoneNumber,
                 Email = user.Email,
@@ -43,7 +45,11 @@ namespace WhiteLagoon.Controllers
             
             };
             booking.TotalCost = booking.Villa.Price * nights;
-            booking.VillaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == villaId).ToList();
+
+
+            booking.VillaNumber = AssignAvailableVillaNumberByVilla(villaId, DateOnly.FromDateTime(Convert.ToDateTime(checkInDate)), nights);
+
+
             return View(booking);
         }
         [Authorize]
@@ -99,9 +105,7 @@ namespace WhiteLagoon.Controllers
                 _unitOfWork.Booking.UpdateStripePaymentID(bookingDetail.Id, session.Id, session.PaymentIntentId);
                 _unitOfWork.Save();
                 Response.Headers.Add("Location", session.Url);
-
-                //BookingConfirmation(bookingDetail.Email); // Enable when email is configured
-                return new StatusCodeResult(303);
+            return new StatusCodeResult(303);
 
         }
 
@@ -109,6 +113,8 @@ namespace WhiteLagoon.Controllers
         public IActionResult BookingDetails(int bookingId)
         {
             BookingDetail bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
+            bookingFromDb.VillaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == bookingFromDb.VillaId).ToList();
+            var resp = _unitOfWork.Booking.GetAll().Where(m =>m.VillaId== bookingFromDb.VillaId && !_bookedStatus.Contains(m.Status) && m.CheckInDate <= bookingFromDb.CheckInDate && m.CheckOutDate >= bookingFromDb.CheckInDate);
 
             return View(bookingFromDb);
         }
@@ -127,8 +133,9 @@ namespace WhiteLagoon.Controllers
                 if (session.PaymentStatus.ToLower() == "paid")
                 {
                     _unitOfWork.Booking.UpdateStripePaymentID(bookingId, session.Id, session.PaymentIntentId);
-                    _unitOfWork.Booking.UpdateStatus(bookingId, SD.StatusApproved);
+                    _unitOfWork.Booking.UpdateStatus(bookingId, SD.StatusApproved, bookingFromDb.VillaNumber);
                     _unitOfWork.Save();
+                    //BookingConfirmationTemplate(bookingDetail.Email); // Enable when email is configured
                 }
 
             }
@@ -140,7 +147,7 @@ namespace WhiteLagoon.Controllers
         [Authorize(Roles = SD.Role_Admin)]
         public IActionResult CheckIn(BookingDetail bookingDetail)
         {
-            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCheckedIn);
+            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCheckedIn, bookingDetail.VillaNumber);
             _unitOfWork.Save();
             TempData["Success"] = "Booking Updated Successfully.";
             return RedirectToAction(nameof(BookingDetails), new { bookingId = bookingDetail.Id});
@@ -150,7 +157,7 @@ namespace WhiteLagoon.Controllers
         [Authorize(Roles = SD.Role_Admin)]
         public IActionResult CheckOut(BookingDetail bookingDetail)
         {
-            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCompleted);
+            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCompleted, bookingDetail.VillaNumber);
             _unitOfWork.Save();
             TempData["Success"] = "Booking Updated Successfully.";
             return RedirectToAction(nameof(BookingDetails), new { bookingId = bookingDetail.Id });
@@ -160,7 +167,7 @@ namespace WhiteLagoon.Controllers
         [Authorize(Roles = SD.Role_Admin)]
         public IActionResult CancelBooking(BookingDetail bookingDetail)
         {
-            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCancelled);
+            _unitOfWork.Booking.UpdateStatus(bookingDetail.Id, SD.StatusCancelled, bookingDetail.VillaNumber);
             _unitOfWork.Save();
             TempData["Success"] = "Booking Updated Successfully.";
             return RedirectToAction(nameof(BookingDetails), new { bookingId = bookingDetail.Id });
@@ -199,7 +206,7 @@ namespace WhiteLagoon.Controllers
 
         #endregion
 
-        public bool BookingConfirmation(string EmailTo)
+        public bool BookingConfirmationTemplate(string EmailTo)
         {
             StringBuilder bookedTemplate = new StringBuilder();
             bookedTemplate.Append("<h4 style='text-align:center;'><img src='https://cdn.logojoy.com/wp-content/uploads/2018/05/01112536/5_big12.png' width='89' height='25' alt='eTracker'></h4>");
@@ -207,13 +214,41 @@ namespace WhiteLagoon.Controllers
             bookedTemplate.Append("<p style='margin-left:15px;'>Now you can manage your booking.</p>");
             bookedTemplate.Append("<p><h4 style='margin-left:15px;'>Thank You<h4><p>");
 
-
             EmailData data = new EmailData();
             data.To = EmailTo;
             data.Subject = "Booking Confirmation";
             data.Body = bookedTemplate.ToString();
 
             return SendMail.CommonMailFormat(data);
+        }
+
+        public int AssignAvailableVillaNumberByVilla(int villaId, DateOnly checkInDate, int nights)
+        {
+            int AvailVilla = 0;
+            var VillaNumumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == villaId).ToList();
+
+
+            var checkViaStatus = _unitOfWork.Booking.GetAll().Where(m => (_bookedStatus.Any(i => i.ToString() == m.Status)) && m.VillaId == villaId).ToList();
+
+            var bookedVillas = _unitOfWork.Booking.GetAll().Where(m => (m.CheckInDate <= checkInDate && m.CheckOutDate >= checkInDate) &&
+                              (_bookedStatus.Any(i => i.ToString() == m.Status)) && m.VillaId == villaId).ToList();
+
+            var aoccupiedroom = checkViaStatus.Select(m => m.VillaNumber).ToList();
+
+            foreach (var villa in VillaNumumbers)
+            {
+                if (!aoccupiedroom.Any(i => i == villa.Villa_Number))
+                {
+                    AvailVilla = villa.Villa_Number;
+                    return AvailVilla;
+                }
+                else if(aoccupiedroom.Count() == 0)
+                {
+                    AvailVilla = villa.Villa_Number;
+                    return AvailVilla;
+                }
+            }
+            return AvailVilla;
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WhiteLagoon_DataAccess;
 
@@ -11,9 +12,11 @@ using WhiteLagoon_DataAccess;
 namespace WhiteLagoon_DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230613161549_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -177,7 +180,7 @@ namespace WhiteLagoon_DataAccess.Migrations
 
                     b.HasIndex("VillaId");
 
-                    b.ToTable("Amenities", (string)null);
+                    b.ToTable("Amenities");
 
                     b.HasData(
                         new
@@ -392,7 +395,7 @@ namespace WhiteLagoon_DataAccess.Migrations
 
                     b.HasIndex("VillaId");
 
-                    b.ToTable("BookingDetails", (string)null);
+                    b.ToTable("BookingDetails");
                 });
 
             modelBuilder.Entity("WhiteLagoon_Models.Villa", b =>
@@ -430,7 +433,7 @@ namespace WhiteLagoon_DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Villas", (string)null);
+                    b.ToTable("Villas");
 
                     b.HasData(
                         new
@@ -480,7 +483,7 @@ namespace WhiteLagoon_DataAccess.Migrations
 
                     b.HasIndex("VillaId");
 
-                    b.ToTable("VillaNumbers", (string)null);
+                    b.ToTable("VillaNumbers");
 
                     b.HasData(
                         new

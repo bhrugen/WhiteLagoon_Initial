@@ -361,3 +361,10 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/WhiteLagoon_DataAccess/Migrations/20230609204916_Initial.cs
+/WhiteLagoon_DataAccess/Migrations/20230609204916_Initial.Designer.cs
+/WhiteLagoon_DataAccess/Migrations/20230611065823_AddColumnVillNumberInBooking.cs
+/WhiteLagoon_DataAccess/Migrations/20230611065823_AddColumnVillNumberInBooking.Designer.cs
+/WhiteLagoon_DataAccess/Migrations/20230613161549_test.cs
+/WhiteLagoon_DataAccess/Migrations/20230613161549_test.Designer.cs
+/WhiteLagoon_DataAccess/Migrations/ApplicationDbContextModelSnapshot.cs

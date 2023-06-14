@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using Stripe.Checkout;
 using Stripe.Terminal;
 using System.Security.Claims;
@@ -9,7 +11,7 @@ using WhiteLagoon_Models;
 using WhiteLagoon_Models.ViewModels;
 using WhiteLagoon_Utility;
 using WhiteLagoon_Utility.Helper.Email;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using WhiteLagoon_Utility.Helper.Export;
 
 namespace WhiteLagoon.Controllers
 {
@@ -47,7 +49,7 @@ namespace WhiteLagoon.Controllers
             booking.TotalCost = booking.Villa.Price * nights;
 
 
-            booking.VillaNumber = AssignAvailableVillaNumberByVilla(villaId, DateOnly.FromDateTime(Convert.ToDateTime(checkInDate)), nights);
+            //booking.VillaNumber = AssignAvailableVillaNumberByVilla(villaId, DateOnly.FromDateTime(Convert.ToDateTime(checkInDate)), nights);
 
 
             return View(booking);
@@ -113,8 +115,18 @@ namespace WhiteLagoon.Controllers
         public IActionResult BookingDetails(int bookingId)
         {
             BookingDetail bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
-            bookingFromDb.VillaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == bookingFromDb.VillaId).ToList();
-            var resp = _unitOfWork.Booking.GetAll().Where(m =>m.VillaId== bookingFromDb.VillaId && !_bookedStatus.Contains(m.Status) && m.CheckInDate <= bookingFromDb.CheckInDate && m.CheckOutDate >= bookingFromDb.CheckInDate);
+
+            if(bookingFromDb.VillaNumber == 0)
+            {
+                var availableVillaNumbers = AssignAvailableVillaNumberByVilla(bookingFromDb.VillaId, bookingFromDb.CheckInDate);
+
+                bookingFromDb.VillaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == bookingFromDb.VillaId
+                            && availableVillaNumbers.Any(x => x == m.Villa_Number)).ToList();
+            }
+            else
+            {
+                bookingFromDb.VillaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == bookingFromDb.VillaId && m.Villa_Number == bookingFromDb.VillaNumber).ToList();
+            }
 
             return View(bookingFromDb);
         }
@@ -222,11 +234,11 @@ namespace WhiteLagoon.Controllers
             return SendMail.CommonMailFormat(data);
         }
 
-        public int AssignAvailableVillaNumberByVilla(int villaId, DateOnly checkInDate, int nights)
+        public List<int> AssignAvailableVillaNumberByVilla(int villaId, DateOnly checkInDate)
         {
-            int AvailVilla = 0;
-            var VillaNumumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == villaId).ToList();
+            List<int> availableVillaNumbers = new List<int>();
 
+            var VillaNumumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == villaId).ToList();
 
             var checkViaStatus = _unitOfWork.Booking.GetAll().Where(m => (_bookedStatus.Any(i => i.ToString() == m.Status)) && m.VillaId == villaId).ToList();
 
@@ -239,16 +251,20 @@ namespace WhiteLagoon.Controllers
             {
                 if (!aoccupiedroom.Any(i => i == villa.Villa_Number))
                 {
-                    AvailVilla = villa.Villa_Number;
-                    return AvailVilla;
+                    availableVillaNumbers.Add(villa.Villa_Number);
                 }
                 else if(aoccupiedroom.Count() == 0)
                 {
-                    AvailVilla = villa.Villa_Number;
-                    return AvailVilla;
+                    availableVillaNumbers.Add(villa.Villa_Number);
                 }
             }
-            return AvailVilla;
+            return availableVillaNumbers;
+        }
+
+        public IActionResult ExportPdf()
+        {
+            MemoryStream memoryStream = ExportInPdf.DownloadPdf();
+            return File(memoryStream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "HTML-to-PDF.pdf");
         }
     }
 }

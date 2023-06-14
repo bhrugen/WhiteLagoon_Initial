@@ -37,9 +37,9 @@ namespace WhiteLagoon.Controllers
 
             var VillaNumumbers = _unitOfWork.VillaNumber.GetAll().ToList();
 
-            var bookedVillas = _unitOfWork.Booking.GetAll().Where(m => (m.CheckInDate <= checkInDate && m.CheckOutDate >= checkInDate) &&
-                               (_bookedStatus.Any(i => i.ToString() == m.Status))).ToList();
+            var bookedVillas = _unitOfWork.Booking.GetAll().Where(m => _bookedStatus.Any(i => i.ToString() == m.Status)).ToList();
 
+            bookedVillas.Where(m => (m.CheckInDate <= checkInDate && m.CheckOutDate >= checkInDate) || m.CheckOutDate == checkInDate.AddDays(nights)).ToList();
 
             if (bookedVillas.Count()  > 0)
             {

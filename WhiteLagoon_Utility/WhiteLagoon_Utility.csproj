@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Syncfusion.HtmlToPdfConverter.Net.Windows" Version="21.2.10" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\WhiteLagoon_Models\WhiteLagoon_Models.csproj" />
   </ItemGroup>
 

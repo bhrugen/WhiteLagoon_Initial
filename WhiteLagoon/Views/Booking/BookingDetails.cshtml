@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components;
 @model WhiteLagoon_Models.BookingDetail
 
-<div id="printDiv" class="p-4 mt-0 mt-lg-4">
+<div class="p-4 mt-0 mt-lg-4">
     <div class="row" style="border: 1px solid #aaa;">
 
         <div class="col-12 col-lg-6 p-4 2 mt-2 mt-md-0 printDiv">
@@ -25,7 +25,6 @@
                 </div>
             </div>
         </div>
-        <div id="pageBreak" style="break-after:page;"></div>
         <div class="col-12 col-lg-6 p-4 2 mt-4 mt-md-0" style="border-left:1px solid #aaa;">
             <form method="post">
                 <input asp-for="Id" hidden />

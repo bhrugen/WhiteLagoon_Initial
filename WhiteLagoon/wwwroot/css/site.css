@@ -151,29 +151,3 @@ body {
     }
 }
 
-#pageBreak {
-    display: none;
-}
-
-@media print {
-    @page {
-        size: A4;
-        margin: 5mm;
-    }
-
-    @page :footer {
-        display: none;
-    }
-
-    @page :header {
-        display: none;
-    }
-
-    #pageBreak {
-        display: block;
-    }
-
-    .noPrint {
-        visibility: hidden;
-    }
-}

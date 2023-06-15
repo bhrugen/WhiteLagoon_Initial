@@ -8,6 +8,7 @@ using WhiteLagoon_Models;
 using WhiteLagoon_Models.ViewModels;
 using WhiteLagoon_Utility;
 using System.Linq;
+using NuGet.Versioning;
 
 namespace WhiteLagoon.Controllers
 {
@@ -37,26 +38,27 @@ namespace WhiteLagoon.Controllers
 
             var VillaNumumbers = _unitOfWork.VillaNumber.GetAll().ToList();
 
-            var bookedVillas = _unitOfWork.Booking.GetAll().Where(m => _bookedStatus.Any(i => i.ToString() == m.Status)).ToList();
+            var bookedVillas = _unitOfWork.Booking.GetAll().ToList();
 
-            bookedVillas.Where(m => (m.CheckInDate <= checkInDate && m.CheckOutDate >= checkInDate) || m.CheckOutDate == checkInDate.AddDays(nights)).ToList();
-
-            if (bookedVillas.Count()  > 0)
+            foreach (var villa in villaList)
             {
-                foreach (var villa in villaList)
+                for (int i = 0; i < nights; i++)
                 {
-                    foreach (var item in bookedVillas)
+                    var isToBeCheckout = bookedVillas.Where(m => m.VillaId == villa.Id && m.CheckOutDate == checkInDate.AddDays(i)).ToList();
+
+                    var totBookedVillas = bookedVillas.Where(m => m.CheckInDate <= checkInDate.AddDays(i) && m.CheckOutDate >= checkInDate.AddDays(i) &&
+                                          m.VillaId == villa.Id &&
+                                          _bookedStatus.Any(i => i.ToString() == m.Status)).ToList();
+
+                    var totRoomsInVilla = VillaNumumbers.Where(m => m.VillaId == villa.Id).ToList();
+
+                    var totAvailRooms = totRoomsInVilla.Count() - totBookedVillas.Count();
+
+                    var availRoomNumbers = totRoomsInVilla.Where(x => totBookedVillas.Select(m => m.VillaNumber).ToList().Any(i => i != x.Villa_Number)).Select(m => m.Villa_Number).ToList();
+
+                    if (totAvailRooms == 0 && isToBeCheckout.Count() == 0)
                     {
-                        var isToBeCheckout = bookedVillas.Where(m => villa.Id == item.VillaId && m.CheckOutDate == checkInDate).ToList();
-
-                        var filteredVillas = bookedVillas.Where(m => m.VillaId == item.VillaId).ToList();
-
-                        var totAvailVillas = (VillaNumumbers.Where(m => m.VillaId == item.VillaId).Count() - filteredVillas.Count()) + isToBeCheckout.Count();
-
-                        if (totAvailVillas == 0 && villa.Id == item.VillaId)
-                        {
-                            villa.IsAvailable = false;
-                        }
+                        villa.IsAvailable = false;
                     }
                 }
             }

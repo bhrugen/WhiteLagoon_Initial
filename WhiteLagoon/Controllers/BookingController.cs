@@ -116,7 +116,7 @@ namespace WhiteLagoon.Controllers
         {
             BookingDetail bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
 
-            if(bookingFromDb.VillaNumber == 0)
+            if (bookingFromDb.VillaNumber == 0)
             {
                 var availableVillaNumbers = AssignAvailableVillaNumberByVilla(bookingFromDb.VillaId, bookingFromDb.CheckInDate);
 
@@ -253,7 +253,7 @@ namespace WhiteLagoon.Controllers
                 {
                     availableVillaNumbers.Add(villa.Villa_Number);
                 }
-                else if(aoccupiedroom.Count() == 0)
+                else if (aoccupiedroom.Count() == 0)
                 {
                     availableVillaNumbers.Add(villa.Villa_Number);
                 }
@@ -264,7 +264,7 @@ namespace WhiteLagoon.Controllers
         public IActionResult ExportPdf()
         {
             MemoryStream memoryStream = ExportInPdf.DownloadPdf();
-            return File(memoryStream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "HTML-to-PDF.pdf");
+            return File(memoryStream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "BookingDetails.pdf");
         }
     }
 }

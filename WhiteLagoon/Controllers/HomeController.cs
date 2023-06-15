@@ -37,32 +37,45 @@ namespace WhiteLagoon.Controllers
             var villaList = _unitOfWork.Villa.GetAll(includeProperties: "VillaAmenity").ToList();
 
             var VillaNumumbers = _unitOfWork.VillaNumber.GetAll().ToList();
-
-            var bookedVillas = _unitOfWork.Booking.GetAll().ToList();
+             var bookedVillas = _unitOfWork.Booking.GetAll().ToList();
 
             foreach (var villa in villaList)
             {
+
+                var roomsInVilla = VillaNumumbers.Where(m => m.VillaId == villa.Id);
+                //for each villa
+                //for each villa number
+                List<int> bookingInDate = new List<int>();
+
                 for (int i = 0; i < nights; i++)
                 {
-                    var villasCheckingOut = bookedVillas.Where(m => m.VillaId == villa.Id && m.CheckOutDate == checkInDate.AddDays(i)).ToList().Count();
-
-                    var villasBooked = bookedVillas.Where(m => m.CheckInDate <= checkInDate.AddDays(i) && m.CheckOutDate >= checkInDate.AddDays(i) &&
+                    //we need to ignore checkout date because at the time room will be available
+                    var villasBooked = bookedVillas.Where(m => m.CheckInDate <= checkInDate.AddDays(i) && m.CheckOutDate > checkInDate.AddDays(i) &&
                                           m.VillaId == villa.Id &&
-                                          _bookedStatus.Any(i => i.ToString() == m.Status)).ToList().Count();
+                                          _bookedStatus.Any(i => i.ToString() == m.Status)).ToList();
 
-                    var roomsInVilla = VillaNumumbers.Where(m => m.VillaId == villa.Id).ToList().Count();
+                    foreach(var booking in villasBooked)
+                    {
+                        if (!bookingInDate.Contains(booking.Id))
+                        {
+                            //we will add booking Id that needs a room in this date range
+                            bookingInDate.Add(booking.Id);
+                        }
+                    }
+                   
 
-                    var totalAvailableRooms = roomsInVilla - villasBooked;
+                    var totalAvailableRooms = roomsInVilla.Count() - bookingInDate.Count();
 
-                    if (totalAvailableRooms == 0 && villasCheckingOut == 0)
+                    if (totalAvailableRooms == 0 )
                     {
                         villa.IsAvailable = false;
                     }
                     //  CheckInDate	CheckOutDate -- will not work for checkin date of 6/29 and 2 nights
-//                      2023 - 06 - 29  2023 - 07 - 02
-//                      2023 - 06 - 30  2023 - 07 - 04
-//                      2023 - 06 - 29  2023 - 06 - 30
+                    //                      2023 - 06 - 29  2023 - 07 - 02
+                    //                      2023 - 06 - 30  2023 - 07 - 04
+                    //                      2023 - 06 - 29  2023 - 06 - 30
                 }
+             
             }
 
             HomeVM homeVM = new()

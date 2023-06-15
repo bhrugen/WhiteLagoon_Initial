@@ -148,17 +148,17 @@ namespace WhiteLagoon_DataAccess.Repository
             return dashboardPieChartVM;
         }
 
-        public async Task<DashboardLineChartVM> GetMemberAndBookingChartDataAsync()
+        public async Task<DashboardLineChartVM> GetMemberAndBookingChartDataAsync(int days)
         {
             DashboardLineChartVM dashboardLineChartVM = new DashboardLineChartVM();
             try
             {
                 DateTime currentDate = DateTime.Now;
-                DateTime thirtyDaysAgo = currentDate.AddDays(-30);
+                DateTime n_DaysAgo = currentDate.AddDays(-days);
 
-                // Query for new bookings and new customers in the past 30 days
+                // Query for new bookings and new customers
                 var bookingData = _db.BookingDetails
-                    .Where(b => b.BookingDate.Date >= thirtyDaysAgo && b.BookingDate.Date <= currentDate)
+                    .Where(b => b.BookingDate.Date >= n_DaysAgo && b.BookingDate.Date <= currentDate)
                     .GroupBy(b => b.BookingDate.Date)
                     .Select(g => new
                     {
@@ -168,7 +168,7 @@ namespace WhiteLagoon_DataAccess.Repository
                     .ToList();
 
                 var customerData = _db.Users
-                    .Where(u => u.CreatedAt.Date >= thirtyDaysAgo && u.CreatedAt.Date <= currentDate)
+                    .Where(u => u.CreatedAt.Date >= n_DaysAgo && u.CreatedAt.Date <= currentDate)
                     .GroupBy(u => u.CreatedAt.Date)
                     .Select(g => new
                     {
@@ -210,7 +210,7 @@ namespace WhiteLagoon_DataAccess.Repository
                 // Separate the counts into individual lists
                 var newBookingData = mergedData.Select(d => d.NewBookingCount).ToList();
                 var newCustomerData = mergedData.Select(d => d.NewCustomerCount).ToList();
-                var categories = mergedData.Select(d => d.DateTime.Date.ToString("dd/MM")).ToList();
+                var categories = mergedData.Select(d => d.DateTime.Date.ToString("MM/dd/yyyy")).ToList();
 
 
                 List<ChartData> chartDataList = new List<ChartData>

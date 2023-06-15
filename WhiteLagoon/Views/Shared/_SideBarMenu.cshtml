@@ -1,0 +1,72 @@
+﻿<ul class="navbar-nav">
+    <li>
+        <div class="text-muted small fw-bold text-uppercase px-3">
+            MENU
+        </div>
+    </li>
+    <li>
+        <a class="nav-link px-3" asp-area="" asp-controller="Dashboard" asp-action="Index">
+            <span class="me-2"><i class="bi bi-speedometer2"></i></span>
+            <span>Dashboard</span>
+        </a>
+    </li>
+    <li>
+        <div class="text-muted small fw-bold text-uppercase px-3 mt-2">
+            Content Managment
+        </div>
+    </li>
+    <li>
+        <a class="nav-link px-3" asp-area="" asp-controller="Villa" asp-action="Index">
+            <span class="me-2"><i class="bi bi-house-door"></i></span>
+            <span>Villa</span>
+        </a>
+    </li>
+    <li>
+        <a class="nav-link px-3" asp-area="" asp-controller="VillaNumber" asp-action="Index">
+            <span class="me-2"><i class="bi bi-list-ol"></i></span>
+            <span>Villa Number</span>
+        </a>
+    </li>
+    <li>
+        <a class="nav-link px-3" asp-area="" asp-controller="Amenity" asp-action="Index">
+            <span class="me-2"><i class="bi bi-building"></i></span>
+            <span>Amenity</span>
+        </a>
+    </li>
+    <li>
+        <a class="nav-link px-3" asp-area="" asp-controller="Booking" asp-action="Index" asp-route-status="Approved">
+            <span class="me-2"><i class="bi bi-journal-plus"></i></span>
+            <span>Booking</span>
+        </a>
+    </li>
+    <li>
+        <div class="text-muted small fw-bold text-uppercase px-3 mt-2">
+            ORGANIZATION
+        </div>
+    </li>
+    <li>
+        <a class="nav-link px-3" asp-area="" asp-controller="Employee" asp-action="Index">
+            <span class="me-2"><i class="bi bi-people"></i></span>
+            <span>Employee</span>
+        </a>
+    </li>
+    <li>
+        <a class="nav-link px-3" asp-area="" asp-controller="Customer" asp-action="Index">
+            <span class="me-2"><i class="bi bi-person-add"></i></span>
+            <span>Customer</span>
+        </a>
+    </li>
+    <li>
+        <a class="nav-link px-3" asp-area="" asp-controller="Profile" asp-action="Index">
+            <span class="me-2"><i class="bi bi-person"></i></span>
+            <span>Profile</span>
+        </a>
+    </li>
+    <li>
+        <a class="nav-link px-3 d-md-none" id="logout" asp-controller="Account" asp-action="Logout">
+            <span class="me-2"><i class="bi bi-box-arrow-left"></i></span>
+            <span>Logout</span>
+        </a>
+    </li>
+
+</ul>

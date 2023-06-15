@@ -5,7 +5,7 @@
         <div>
             <p class="text-muted mb-0">Customer Bookings</p>
         </div>
-        <div id="customer_bookings_chart"></div>
+        <div id="customer_bookings_chart" data-colors='["--bs-primary", "--bs-warning"]'></div>
 
         <div class="justify-content-center text-center chart-spinner" style="display:none">
             <div class="spinner-border" role="status">
@@ -32,15 +32,18 @@
              // Function to load the Pie chart
              function loadCustomerBookingsPieChart(id, data) {
 
+                 var chartColors = getChartColorsArray(id);
+
                  var options = {
+                     colors: chartColors,
                      series: data.series,
-                     labels: data.labels,  //['New customer booking', 'Returning Customer Bookings'],
+                     labels: data.labels,
                      chart: {
                          width: 380,
                          type: 'pie',
                      },
                      stroke: {
-                         colors: ['#666']
+                         show:false
                      },
                      plotOptions: {
                          pie: {
@@ -54,7 +57,7 @@
                          horizontalAlign: 'center',
                          labels: {
                              colors: "#fff",
-                             useSeriesColors: false
+                             useSeriesColors: true
                          },
                      },
                      responsive: [{

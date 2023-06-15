@@ -86,9 +86,9 @@ namespace WhiteLagoon.Controllers
             return Json(data);
         }
 
-        public async Task<IActionResult> GetMemberAndBookingChartData()
+        public async Task<IActionResult> GetMemberAndBookingChartData(int days)
         {
-            DashboardLineChartVM dashboardLineChartVM = await _unitOfWork.AdminDashboard.GetMemberAndBookingChartDataAsync();
+            DashboardLineChartVM dashboardLineChartVM = await _unitOfWork.AdminDashboard.GetMemberAndBookingChartDataAsync(days);
 
             // Retrieve your data and format it as needed
             var data = new

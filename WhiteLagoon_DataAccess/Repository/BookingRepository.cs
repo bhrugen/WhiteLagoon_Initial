@@ -24,12 +24,13 @@ namespace WhiteLagoon_DataAccess.Repository
             _db.Update(entity);
         }
 
-        public void UpdateStatus(int bookingId, string orderStatus)
+        public void UpdateStatus(int bookingId, string orderStatus, int villNumber)
         {
             var orderFromDb = _db.BookingDetails.FirstOrDefault(u => u.Id == bookingId);
             if (orderFromDb != null)
             {
                 orderFromDb.Status = orderStatus;
+                orderFromDb.VillaNumber = villNumber;
             }
         }
 

@@ -25,6 +25,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 //});
 var app = builder.Build();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+
+Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBMAY9C3t2VFhhQlJBfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hSn5VdkxiWH1bc3NcTmRc");
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {

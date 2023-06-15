@@ -1,28 +1,33 @@
 ﻿@using Microsoft.AspNetCore.Components;
 @model WhiteLagoon_Models.BookingDetail
 
-<div class="p-4 mt-0 mt-lg-4">
+<div id="printDiv" class="p-4 mt-0 mt-lg-4">
     <div class="row" style="border: 1px solid #aaa;">
 
-        <div class="col-12 col-lg-6 p-4 2 mt-2 mt-md-0">
-            <div class="row p-1 " style="border-radius:20px; ">
-                <div class="col-6">
-                    <h3 class="text-success">Villa Details</h3>
+        <div class="col-12 col-lg-6 p-4 2 mt-2 mt-md-0 printDiv">
+             <form method="post">
+                <div class="row p-1 " style="border-radius:20px; ">
+                    <div class="col-6">
+                        <h3 class="text-success">Villa Details</h3>
+                    </div>
+                    <hr />
+                    <partial name="_VillaDetail" model="@Model.Villa" />
+                    <hr />
+                    <div>
+                        <button id="ExportPdf" type="submit" asp-action="ExportPdf" asp-route-bookingId="@Model.Id" class="btn btn-danger noPrint">Print</button>
+                    </div>
+                    <div class="text-end">
+                        <h4 class="text-danger font-weight-bold ">
+                            Booking Total :
+                            <span style="border-bottom:1px solid #ff6a00">
+                                @Model.TotalCost.ToString("c")
+                            </span>
+                        </h4>
+                    </div>
                 </div>
-                <hr />
-                <partial name="_VillaDetail" model="@Model.Villa" />
-                <hr />
-                <div class="text-end">
-                    <h4 class="text-danger font-weight-bold ">
-                        Booking Total :
-                        <span style="border-bottom:1px solid #ff6a00">
-                            @Model.TotalCost.ToString("c")
-                        </span>
-                    </h4>
-                </div>
-            </div>
+             </form>
         </div>
-        <div class="col-12 col-lg-6 p-4 2 mt-4 mt-md-0" style="border-left:1px solid #aaa">
+        <div class="col-12 col-lg-6 p-4 2 mt-4 mt-md-0" style="border-left:1px solid #aaa;">
             <form method="post">
                 <input asp-for="Id" hidden />
                 <input asp-for="VillaId" hidden />
@@ -37,7 +42,7 @@
                     <div class="col-6">
                         @if ((Model.Status == SD.StatusApproved || Model.Status == SD.StatusPending)&& User.IsInRole(SD.Role_Admin))
                         {
-                            <button asp-action="CancelBooking" type="submit" class="btn btn-sm btn-outline-danger form-control my-1"><i class="bi bi-x-circle"></i> &nbsp; Cancel Booking</button>
+                            <button asp-action="CancelBooking" type="submit" class="btn btn-sm btn-outline-danger form-control my-1 noPrint"><i class="bi bi-x-circle"></i> &nbsp; Cancel Booking</button>
                         }
                     </div>
                 </div>
@@ -93,6 +98,15 @@
                     <input asp-for="ActualCheckOutDate" disabled class="form-control" />
                 </div>
 
+                    <div class="form-group pt-2 col-6">
+                        <label class="text-warning" asp-for="VillaNumber"></label>
+                        <select class="form-control" asp-for="VillaNumber">
+                            @foreach (var item in Model.VillaNumbers)
+                            {
+                                <option value="@item.Villa_Number">@item.Villa_Number</option>
+                            }
+                        </select>
+                    </div>
 
 
                 @if (Model.IsPaymentSuccessful)

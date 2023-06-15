@@ -58,6 +58,10 @@ namespace WhiteLagoon.Controllers
                     {
                         villa.IsAvailable = false;
                     }
+                    //  CheckInDate	CheckOutDate -- will not work for checkin date of 6/29 and 2 nights
+//                      2023 - 06 - 29  2023 - 07 - 02
+//                      2023 - 06 - 30  2023 - 07 - 04
+//                      2023 - 06 - 29  2023 - 06 - 30
                 }
             }
 

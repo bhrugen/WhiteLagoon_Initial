@@ -44,17 +44,17 @@ namespace WhiteLagoon.Controllers
             {
                 for (int i = 0; i < nights; i++)
                 {
-                    var isToBeCheckout = bookedVillas.Where(m => m.VillaId == villa.Id && m.CheckOutDate == checkInDate.AddDays(i)).ToList();
+                    var villasCheckingOut = bookedVillas.Where(m => m.VillaId == villa.Id && m.CheckOutDate == checkInDate.AddDays(i)).ToList().Count();
 
-                    var totBookedVillas = bookedVillas.Where(m => m.CheckInDate <= checkInDate.AddDays(i) && m.CheckOutDate >= checkInDate.AddDays(i) &&
+                    var villasBooked = bookedVillas.Where(m => m.CheckInDate <= checkInDate.AddDays(i) && m.CheckOutDate >= checkInDate.AddDays(i) &&
                                           m.VillaId == villa.Id &&
-                                          _bookedStatus.Any(i => i.ToString() == m.Status)).ToList();
+                                          _bookedStatus.Any(i => i.ToString() == m.Status)).ToList().Count();
 
-                    var totRoomsInVilla = VillaNumumbers.Where(m => m.VillaId == villa.Id).ToList();
+                    var roomsInVilla = VillaNumumbers.Where(m => m.VillaId == villa.Id).ToList().Count();
 
-                    var totAvailRooms = totRoomsInVilla.Count() - totBookedVillas.Count();
+                    var totalAvailableRooms = roomsInVilla - villasBooked;
 
-                    if (totAvailRooms == 0 && isToBeCheckout.Count() == 0)
+                    if (totalAvailableRooms == 0 && villasCheckingOut == 0)
                     {
                         villa.IsAvailable = false;
                     }

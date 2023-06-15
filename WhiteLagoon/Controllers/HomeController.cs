@@ -54,8 +54,6 @@ namespace WhiteLagoon.Controllers
 
                     var totAvailRooms = totRoomsInVilla.Count() - totBookedVillas.Count();
 
-                    var availRoomNumbers = totRoomsInVilla.Where(x => totBookedVillas.Select(m => m.VillaNumber).ToList().Any(i => i != x.Villa_Number)).Select(m => m.Villa_Number).ToList();
-
                     if (totAvailRooms == 0 && isToBeCheckout.Count() == 0)
                     {
                         villa.IsAvailable = false;

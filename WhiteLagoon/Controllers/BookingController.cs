@@ -1,6 +1,9 @@
 ﻿using Azure.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewEngines;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Stripe;
 using Stripe.Checkout;
 using Stripe.Terminal;
@@ -12,6 +15,7 @@ using WhiteLagoon_Models.ViewModels;
 using WhiteLagoon_Utility;
 using WhiteLagoon_Utility.Helper.Email;
 using WhiteLagoon_Utility.Helper.Export;
+using IHostingEnvironment = Microsoft.AspNetCore.Hosting.IHostingEnvironment;
 
 namespace WhiteLagoon.Controllers
 {
@@ -19,9 +23,14 @@ namespace WhiteLagoon.Controllers
     {
         private readonly List<string> _bookedStatus = new List<string> { "Approved", "CheckedIn" };
         private readonly IUnitOfWork _unitOfWork;
-        public BookingController(IUnitOfWork unitOfWork)
+        private ICompositeViewEngine _viewEngine;
+        private readonly string _rootDirectory;
+
+        public BookingController(IUnitOfWork unitOfWork, ICompositeViewEngine viewEngine, IHostingEnvironment env)
         {
             _unitOfWork = unitOfWork;
+            _viewEngine = viewEngine;
+            _rootDirectory = env.WebRootPath;
         }
         public IActionResult Index()
         {
@@ -261,10 +270,47 @@ namespace WhiteLagoon.Controllers
             return availableVillaNumbers;
         }
 
-        public IActionResult ExportPdf()
+        public async Task<IActionResult> ExportPdfAsync(int bookingId)
         {
-            MemoryStream memoryStream = ExportInPdf.DownloadPdf();
+            BookingDetail bookingModel = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
+
+            bookingModel.VillaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == bookingModel.VillaId && m.Villa_Number == bookingModel.VillaNumber).ToList();
+
+            StringBuilder bookedTemplate = new StringBuilder();
+            bookedTemplate.Append("<html><head><link rel='stylesheet' href='site.css'/> <link rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css'/></head><body>");
+            bookedTemplate.Append(await RenderViewToString("BookingDetails", bookingModel));
+            bookedTemplate.Append("</body>");
+
+            string baseUrl = Path.Combine(_rootDirectory, "css");
+            MemoryStream memoryStream = ExportInPdf.DownloadPdf(bookedTemplate.ToString(), baseUrl);
             return File(memoryStream.ToArray(), System.Net.Mime.MediaTypeNames.Application.Pdf, "BookingDetails.pdf");
+        }
+
+        private async Task<string> RenderViewToString(string viewName, object model)
+        {
+            if (string.IsNullOrEmpty(viewName))
+                viewName = ControllerContext.ActionDescriptor.ActionName;
+
+            ViewData.Model = model;
+
+            using (var writer = new StringWriter())
+            {
+                ViewEngineResult viewResult =
+                    _viewEngine.FindView(ControllerContext, viewName, false);
+
+                ViewContext viewContext = new ViewContext(
+                    ControllerContext,
+                    viewResult.View,
+                    ViewData,
+                    TempData,
+                    writer,
+                    new HtmlHelperOptions()
+                );
+
+                await viewResult.View.RenderAsync(viewContext);
+
+                return writer.GetStringBuilder().ToString();
+            }
         }
     }
 }

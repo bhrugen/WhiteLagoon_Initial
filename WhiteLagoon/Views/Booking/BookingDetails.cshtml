@@ -1,7 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Components;
 @model WhiteLagoon_Models.BookingDetail
 
-<div class="p-4 mt-0 mt-lg-4">
+<div id="printDiv" class="p-4 mt-0 mt-lg-4">
     <div class="row" style="border: 1px solid #aaa;">
 
         <div class="col-12 col-lg-6 p-4 2 mt-2 mt-md-0 printDiv">
@@ -14,7 +14,7 @@
                     <partial name="_VillaDetail" model="@Model.Villa" />
                     <hr />
                     <div>
-                        <button type="submit" asp-action="ExportPdf" class="btn btn-danger noPrint">Print</button>
+                        <button id="ExportPdf" type="submit" asp-action="ExportPdf" asp-route-bookingId="@Model.Id" class="btn btn-danger noPrint">Print</button>
                     </div>
                     <div class="text-end">
                         <h4 class="text-danger font-weight-bold ">

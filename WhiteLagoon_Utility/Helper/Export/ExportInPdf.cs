@@ -11,7 +11,7 @@ namespace WhiteLagoon_Utility.Helper.Export
 {
     public static class ExportInPdf
     {
-        public static MemoryStream DownloadPdf()
+        public static MemoryStream DownloadPdf(string html, string path)
         {
             //Initialize HTML to PDF converter.
             HtmlToPdfConverter htmlConverter = new HtmlToPdfConverter();
@@ -21,7 +21,7 @@ namespace WhiteLagoon_Utility.Helper.Export
             //Assign Blink converter settings to HTML converter.
             htmlConverter.ConverterSettings = blinkConverterSettings;
             //Convert URL to PDF document.
-            PdfDocument document = htmlConverter.Convert("https://www.syncfusion.com");
+            PdfDocument document = htmlConverter.Convert(html, path);
             //Create memory stream.
             MemoryStream stream = new MemoryStream();
             //Save and close the document. 

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
+using WhiteLagoon_Utility;
 
 namespace WhiteLagoon_DataAccess.Repository
 {
@@ -24,13 +25,24 @@ namespace WhiteLagoon_DataAccess.Repository
             _db.Update(entity);
         }
 
-        public void UpdateStatus(int bookingId, string orderStatus)
+        public void UpdateStatus(int bookingId, string orderStatus, int villaNumber=0)
         {
             var orderFromDb = _db.BookingDetails.FirstOrDefault(u => u.Id == bookingId);
             if (orderFromDb != null)
             {
                 orderFromDb.Status = orderStatus;
+                if (orderStatus == SD.StatusCheckedIn && villaNumber > 0)
+                {
+                    orderFromDb.VillaNumber = villaNumber;
+                    orderFromDb.ActualCheckInDate = DateTime.Now;
+                }
+                if (orderStatus == SD.StatusCompleted)
+                {
+                    orderFromDb.ActualCheckOutDate=DateTime.Now;
+                }
+                
             }
+            
         }
 
         public void UpdateStripePaymentID(int id, string sessionId, string paymentIntentId)

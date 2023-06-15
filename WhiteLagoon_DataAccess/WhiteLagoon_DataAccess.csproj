@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\WhiteLagoon_Models\WhiteLagoon_Models.csproj" />
+    <ProjectReference Include="..\WhiteLagoon_Utility\WhiteLagoon_Utility.csproj" />
   </ItemGroup>
 
 </Project>

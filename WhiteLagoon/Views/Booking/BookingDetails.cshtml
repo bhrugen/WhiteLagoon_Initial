@@ -9,6 +9,9 @@
                 <div class="col-6">
                     <h3 class="text-success">Villa Details</h3>
                 </div>
+                <div class="col-6 text-end">
+                    <a asp-controller="Booking" asp-action="Index" asp-route-status="Approved" class="btn btn-secondary my-2"><i class="bi bi-arrow-left-circle"></i> Back to Bookings</a>
+                </div>
                 <hr />
                 <partial name="_VillaDetail" model="@Model.Villa" />
                 <hr />
@@ -93,7 +96,22 @@
                     <input asp-for="ActualCheckOutDate" disabled class="form-control" />
                 </div>
 
-
+                    <div class="form-group pt-2 col-6">
+                        <label class="text-warning" asp-for="VillaNumber"></label>
+                        @if (Model.Status == SD.StatusApproved)
+                        {
+                            <select class="form-select" asp-for="VillaNumber">
+                                @foreach (var item in Model.VillaNumbers)
+                                {
+                                    <option value="@item.Villa_Number">@item.Villa_Number</option>
+                                }
+                            </select>
+                        }
+                        @if(Model.Status==SD.StatusCheckedIn || Model.Status == SD.StatusCompleted)
+                        {
+                            <input asp-for="VillaNumber" disabled class="form-control" />
+                        }
+                    </div>
 
                 @if (Model.IsPaymentSuccessful)
                 {

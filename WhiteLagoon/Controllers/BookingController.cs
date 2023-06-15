@@ -103,7 +103,7 @@ namespace WhiteLagoon.Controllers
         public IActionResult BookingDetails(int bookingId)
         {
             BookingDetail bookingFromDb = _unitOfWork.Booking.Get(u => u.Id == bookingId, includeProperties: "User,Villa");
-
+          
             return View(bookingFromDb);
         }
 

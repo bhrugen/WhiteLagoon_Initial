@@ -81,25 +81,29 @@
                     <label class="text-warning" asp-for="CheckInDate"></label>
                     <input asp-for="CheckInDate" disabled class="form-control" />
                 </div>
-                    <div class="form-group pt-2 col-6">
-                        <label class="text-warning" asp-for="ActualCheckInDate"></label>
-                        <input asp-for="ActualCheckInDate" disabled class="form-control" />
-                    </div>
-
+                    
 
                     <div class="form-group pt-2 col-6">
                     <label class="text-warning" asp-for="CheckOutDate"></label>
                     <input asp-for="CheckOutDate" disabled class="form-control" />
                 </div>
-                    <div class="form-group pt-2 col-6">
-                    <label class="text-warning" asp-for="ActualCheckOutDate"></label>
-                    <input asp-for="ActualCheckOutDate" disabled class="form-control" />
-                </div>
+                
+                    @if (User.IsInRole(SD.Role_Admin))
+                    {
+                        <div class="form-group pt-2 col-6">
+                            <label class="text-warning" asp-for="ActualCheckInDate"></label>
+                            <input asp-for="ActualCheckInDate" disabled class="form-control" />
+                        </div>
 
+                        <div class="form-group pt-2 col-6">
+                            <label class="text-warning" asp-for="ActualCheckOutDate"></label>
+                            <input asp-for="ActualCheckOutDate" disabled class="form-control" />
+                        </div>
+                    }
                     <div class="form-group pt-2 col-6">
-                        <label class="text-warning" asp-for="VillaNumber"></label>
-                        @if (Model.Status == SD.StatusApproved)
+                        @if (Model.Status == SD.StatusApproved && User.IsInRole(SD.Role_Admin))
                         {
+                            <label class="text-warning" asp-for="VillaNumber"></label>
                             <select class="form-select" asp-for="VillaNumber">
                                 @foreach (var item in Model.VillaNumbers)
                                 {
@@ -109,11 +113,12 @@
                         }
                         @if(Model.Status==SD.StatusCheckedIn || Model.Status == SD.StatusCompleted)
                         {
+                            <label class="text-warning" asp-for="VillaNumber"></label>
                             <input asp-for="VillaNumber" disabled class="form-control" />
                         }
                     </div>
 
-                @if (Model.IsPaymentSuccessful)
+                @if (Model.IsPaymentSuccessful && User.IsInRole(SD.Role_Admin))
                 {
                         <div class="form-group pt-2 col-6">
                         <label class="text-warning" asp-for="StripePaymentIntentId"></label>

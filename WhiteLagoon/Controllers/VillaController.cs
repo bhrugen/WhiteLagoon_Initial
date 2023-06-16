@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using WhiteLagoon_DataAccess;
 using WhiteLagoon_DataAccess.Repository.IRepository;
 using WhiteLagoon_Models;
+using WhiteLagoon_Utility;
 
 namespace WhiteLagoon.Controllers
 {
+    [Authorize(Roles = SD.Role_Admin)]
     public class VillaController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;

@@ -93,7 +93,27 @@ namespace WhiteLagoon.Controllers
 
 
                 var service = new SessionService();
-                Session session = service.Create(options);
+
+            //RAVI check availability again to be double sure
+            var villaNumbersList = _unitOfWork.VillaNumber.GetAll().ToList();
+            var bookedVillas = _unitOfWork.Booking.GetAll(u => u.Status == SD.StatusApproved ||
+            u.Status == SD.StatusCheckedIn).ToList();
+
+            int roomsAvailable = SD.VillaRoomsAvailable_Count(villa, villaNumbersList,
+                bookingDetail.CheckInDate, bookingDetail.Nights, bookedVillas);
+            if (roomsAvailable == 0)
+            {
+                TempData["error"] = "Room has been sold out!";
+                //no rooms available
+                return RedirectToAction(nameof(FinalizeBooking), new {
+                    villaId= bookingDetail.VillaId,
+                    checkInDate = bookingDetail.CheckInDate,
+                    nights = bookingDetail.Nights
+                });
+            }
+
+
+            Session session = service.Create(options);
                 _unitOfWork.Booking.UpdateStripePaymentID(bookingDetail.Id, session.Id, session.PaymentIntentId);
                 _unitOfWork.Save();
                 Response.Headers.Add("Location", session.Url);

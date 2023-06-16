@@ -41,38 +41,8 @@ namespace WhiteLagoon.Controllers
 
             foreach (var villa in villaList)
             {
-                var roomsInVilla = villaNumbersList.Where(m => m.VillaId == villa.Id);
-                //for each villa
-                //for each villa number
-                List<int> bookingInDate = new List<int>();
-
-                for (int i = 0; i < nights; i++)
-                {
-                    //we need to ignore checkout date because at the time room will be available
-                    var villasBooked = bookedVillas.Where(m => m.CheckInDate <= checkInDate.AddDays(i) && m.CheckOutDate > checkInDate.AddDays(i) &&
-                                          m.VillaId == villa.Id).ToList();
-
-                    foreach(var booking in villasBooked)
-                    {
-                        if (!bookingInDate.Contains(booking.Id))
-                        {
-                            //we will add booking Id that needs a room in this date range
-                            bookingInDate.Add(booking.Id);
-                        }
-                    }
-                   
-
-                    var totalAvailableRooms = roomsInVilla.Count() - bookingInDate.Count();
-                    if (totalAvailableRooms == 0 )
-                    {
-                        villa.IsAvailable = false;
-                    }
-                    //  CheckInDate	CheckOutDate -- will not work for checkin date of 6/29 and 2 nights
-                    //                      2023 - 06 - 29  2023 - 07 - 02
-                    //                      2023 - 06 - 30  2023 - 07 - 04
-                    //                      2023 - 06 - 29  2023 - 06 - 30
-                }
-             
+                int roomsAvailable = SD.VillaRoomsAvailable_Count(villa, villaNumbersList, checkInDate, nights, bookedVillas);
+                villa.IsAvailable = roomsAvailable > 0 ? true : false; 
             }
 
             HomeVM homeVM = new()

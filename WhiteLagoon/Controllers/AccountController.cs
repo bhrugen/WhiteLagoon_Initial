@@ -36,7 +36,7 @@ namespace WhiteLagoon.Controllers
             {
                 ReturnUrl = returnUrl,
             };
-            
+
             return View(loginVM);
         }
 
@@ -50,13 +50,22 @@ namespace WhiteLagoon.Controllers
                 var result = await _signInManager.PasswordSignInAsync(loginVM.Email, loginVM.Password, loginVM.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    if (string.IsNullOrEmpty(loginVM.ReturnUrl))
+                    ///Check if the logged-in user role is admin then redirect to the dashboard page.
+                    var user = await _userManager.FindByNameAsync(loginVM.Email);
+                    if (user != null && await _userManager.IsInRoleAsync(user, SD.Role_Admin))
                     {
-                        return RedirectToAction("Index", "Home");
+                        return RedirectToAction("Index", "Dashboard");
                     }
                     else
                     {
-                        return LocalRedirect(loginVM.ReturnUrl);
+                        if (string.IsNullOrEmpty(loginVM.ReturnUrl))
+                        {
+                            return RedirectToAction("Index", "Home");
+                        }
+                        else
+                        {
+                            return LocalRedirect(loginVM.ReturnUrl);
+                        }
                     }
                 }
                 else
@@ -80,7 +89,7 @@ namespace WhiteLagoon.Controllers
                 _roleManager.CreateAsync(new IdentityRole(SD.Role_Admin)).GetAwaiter().GetResult();
                 _roleManager.CreateAsync(new IdentityRole(SD.Role_Customer)).GetAwaiter().GetResult();
             }
-            RegisterVM registerVM = new ()
+            RegisterVM registerVM = new()
             {
                 RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
                 {
@@ -88,7 +97,7 @@ namespace WhiteLagoon.Controllers
                     Value = i
                 }),
             };
-            
+
             return View(registerVM);
         }
 
@@ -100,8 +109,8 @@ namespace WhiteLagoon.Controllers
                 Name = registerVM.Name,
                 Email = registerVM.Email,
                 PhoneNumber = registerVM.Phone,
-                NormalizedEmail=registerVM.Email.ToUpper(),
-                EmailConfirmed=true,
+                NormalizedEmail = registerVM.Email.ToUpper(),
+                EmailConfirmed = true,
                 UserName = registerVM.Email,
                 CreatedAt = DateTime.Now
             };
@@ -119,7 +128,7 @@ namespace WhiteLagoon.Controllers
                     await _userManager.AddToRoleAsync(user, SD.Role_Customer);
                 }
 
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                await _signInManager.SignInAsync(user, isPersistent: false);
                 if (string.IsNullOrEmpty(registerVM.ReturnUrl))
                 {
                     return RedirectToAction("Index", "Home");
@@ -128,7 +137,7 @@ namespace WhiteLagoon.Controllers
                 {
                     return LocalRedirect(registerVM.ReturnUrl);
                 }
-                   
+
             }
             foreach (var error in result.Errors)
             {

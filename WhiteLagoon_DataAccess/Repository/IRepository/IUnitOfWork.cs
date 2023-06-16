@@ -13,6 +13,8 @@ namespace WhiteLagoon_DataAccess.Repository.IRepository
         IAmenityRepository Amenity { get; }
         IBookingRepository Booking { get; }
         IUserRepository User { get; }
+        IDashboardRepository AdminDashboard { get; }
+
         void Save();
     }
 }

@@ -148,13 +148,13 @@ namespace WhiteLagoon_DataAccess.Repository
             return dashboardPieChartVM;
         }
 
-        public async Task<DashboardLineChartVM> GetMemberAndBookingChartDataAsync(int days)
+        public async Task<DashboardLineChartVM> GetMemberAndBookingChartDataAsync()
         {
             DashboardLineChartVM dashboardLineChartVM = new DashboardLineChartVM();
             try
             {
                 DateTime currentDate = DateTime.Now;
-                DateTime n_DaysAgo = currentDate.AddDays(-days);
+                DateTime n_DaysAgo = currentDate.AddDays(-30);
 
                 // Query for new bookings and new customers
                 var bookingData = _db.BookingDetails
@@ -231,8 +231,6 @@ namespace WhiteLagoon_DataAccess.Repository
 
             return dashboardLineChartVM;
         }
-
-
-
+    
     }
 }

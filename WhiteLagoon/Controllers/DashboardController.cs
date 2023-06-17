@@ -27,7 +27,7 @@ namespace WhiteLagoon.Controllers
             // Retrieve your data and format it as needed
             var data = new
             {
-                series = dashboardRadialBarChartVM.Series, //new int[] { 30 },
+                series = dashboardRadialBarChartVM.Series,
                 totalCount = dashboardRadialBarChartVM.TotalCount,
                 increaseDecreaseRatio = dashboardRadialBarChartVM.IncreaseDecreaseRatio,
                 isRatioIncrease = dashboardRadialBarChartVM.IsRatioIncrease

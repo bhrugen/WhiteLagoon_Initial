@@ -17,8 +17,10 @@ function loadDataTable(status) {
             { data: 'name', "width": "15%" },
             { data: 'phone', "width": "10%" },
             { data: 'email', "width": "15%" },
-            { data: 'status', "width": "15%" },
-            { data: 'totalCost', "width": "10%" },
+            { data: 'status', "width": "10%" },
+            { data: 'checkInDate', "width": "10%" },
+            { data: 'nights', "width": "10%" },
+            { data: 'totalCost', render: $.fn.dataTable.render.number(',', '.', 2), "width": "10%" },
             {
                 data: 'id',
                 "render": function (data) {
@@ -26,31 +28,9 @@ function loadDataTable(status) {
                      <a href="/booking/bookingDetails?bookingId=${data}" class="btn btn-outline-warning mx-2"> <i class="bi bi-pencil-square"></i> Details</a>               
                     </div>`
                 },
-                "width": "25%"
+                "width": "15%"
             }
         ]
     });
 }
 
-function Delete(url) {
-    Swal.fire({
-        title: 'Are you sure?',
-        text: "You won't be able to revert this!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Yes, delete it!'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            $.ajax({
-                url: url,
-                type: 'DELETE',
-                success: function (data) {
-                    dataTable.ajax.reload();
-                    toastr.success(data.message);
-                }
-            })
-        }
-    })
-}

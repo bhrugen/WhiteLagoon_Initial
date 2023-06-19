@@ -12,5 +12,7 @@ namespace WhiteLagoon_DataAccess.Repository.IRepository
         Task<DashboardRadialBarChartVM> GetBookingsChartDataAsync();
         Task<DashboardRadialBarChartVM> GetRevenueChartDataAsync();
         Task<DashboardRadialBarChartVM> GetRegisteredUserChartDataAsync();
+        Task<DashboardPieChartVM> GetBookingChartDataAsync();
+        Task<DashboardLineChartVM> GetMemberAndBookingChartDataAsync();
     }
 }

@@ -31,7 +31,7 @@
             <div class="col-12 col-md-5  offset-md-1 pl-2  pr-2 pr-md-0">
                 <div class="form-group">
                     <label>Check In Date</label>
-                    <input id="checkindate" type="date" asp-for="CheckInDate" class="form-control" />
+                    <input id="checkindate" type="text" asp-for="CheckInDate" class="form-control" />
                 </div>
             </div>
 
@@ -62,17 +62,29 @@
     </form>
 </div>
 
-
+@* <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/1.0.10/datepicker.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+ *@
 @section scripts{
     <script>
         $(document).ready(function () {
-            var today = new Date();
-            var dd = String(today.getDate()).padStart(2, '0');
-            var mm = String(today.getMonth() + 1).padStart(2, '0');
-            var yyyy = today.getFullYear();
+            // Initialize the date picker
+            const today = new Date();
+            $("#checkindatet").datepicker();
 
-            today = yyyy + '-' + mm + '-' + dd;
-            $('#checkindate').attr('min', today);
+            // const datepicker = new Datepicker(document.getElementById('checkindatet'), {
+            //     format: 'yyyy-mm-dd', // specify the desired date format
+            //     startDate: today, // set the start date to today
+            //     minDate: today, // prevent selection of past dates
+            //     autohide: true, // hide the date picker when a date is selected
+            // });
+
+            // var today = new Date();
+            // var dd = String(today.getDate()).padStart(2, '0');
+            // var mm = String(today.getMonth() + 1).padStart(2, '0');
+            // var yyyy = today.getFullYear();
+
+            // today = yyyy + '-' + mm + '-' + dd;
+            // $('#checkindate').attr('min', today);
         });
 
         function fnLoadVillaList() {

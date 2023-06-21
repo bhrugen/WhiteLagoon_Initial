@@ -5,6 +5,7 @@
 
     $('#rtDescription').summernote({
         height: 200,
+        disableResizeEditor: true
     });
 
     $('form').each(function () {

@@ -9,7 +9,7 @@
         </div>
     </div>
     <div class="card-body border p-4">
-        <form method="post" class="row" enctype="multipart/form-data">
+        <form method="post" class="row" enctype="multipart/form-data" id="frmVilla">
             <div class=" p-3">
                 @*SHOW THIS WITH ALL EXAMPLES!   <div asp-validation-summary="ModelOnly"></div>*@
                 <div class="form-floating py-2 col-12">
@@ -18,7 +18,7 @@
                     <span asp-validation-for="Name" class="text-danger"></span>
                 </div>
                 <div class="form-floating py-2 col-12">
-                    <textarea asp-for="Description" style="height:150px" class="form-control border shadow"></textarea>
+                    <textarea id="rtDescription" asp-for="Description" style="height:150px" class="form-control border shadow summernote"></textarea>
                     <label asp-for="Description" class="ms-2"></label>
                     <span asp-validation-for="Description" class="text-danger"></span>
                 </div>
@@ -62,7 +62,8 @@
 
 
 @section Scripts{
-    @{
-        <partial name="_ValidationScriptsPartial" />
-    }
+    <script src="~/js/createvilla.js"></script>
+
+    <partial name="_ValidationScriptsPartial" />
+    <partial name="_SummernoteScriptsPartial" />
 }

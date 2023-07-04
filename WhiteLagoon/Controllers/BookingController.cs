@@ -238,8 +238,8 @@ namespace WhiteLagoon.Controllers
             WordDocument doc = new WordDocument();
 
             // Load the template.
-            string dataPathSales = basePath + @"/Sample/SampleVilla.docx";
-            FileStream fileStream = new FileStream(dataPathSales, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            string dataPath = basePath + @"/Sample/SampleVilla.docx";
+            FileStream fileStream = new FileStream(dataPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             doc.Open(fileStream, FormatType.Automatic);
 
             //Get Villa Booking Details
@@ -273,6 +273,58 @@ namespace WhiteLagoon.Controllers
             }
         }
 
+        #region API CALLS
+
+        [HttpGet]
+        public IActionResult GetAll(string status = "")
+        {
+            IEnumerable<BookingDetail> objBookings;
+
+
+            if (User.IsInRole(SD.Role_Admin))
+            {
+                objBookings = _unitOfWork.Booking.GetAll(includeProperties: "User,Villa").ToList();
+            }
+            else
+            {
+
+                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                objBookings = _unitOfWork.Booking
+                    .GetAll(u => u.UserId == userId, includeProperties: "User,Villa");
+            }
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                objBookings = objBookings.Where(u => u.Status.ToLower() == status.ToLower());
+            }
+
+            return Json(new { data = objBookings });
+        }
+
+        public List<int> AssignAvailableVillaNumberByVilla(int villaId, DateOnly checkInDate)
+        {
+            List<int> availableVillaNumbers = new List<int>();
+
+            var villaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == villaId).ToList();
+
+            var checkedInVilla = _unitOfWork.Booking.GetAll().Where(m => m.Status == SD.StatusCheckedIn && m.VillaId == villaId).Select(u => u.VillaNumber);
+
+
+            foreach (var villaNumber in villaNumbers)
+            {
+                if (!checkedInVilla.Contains(villaNumber.Villa_Number))
+                {
+                    //Villa is not checked in
+                    availableVillaNumbers.Add(villaNumber.Villa_Number);
+                }
+            }
+            return availableVillaNumbers;
+        }
+        #endregion
+
+        #region PDF Library
         private VillaBookingModel GetWordDocumentBindingData(int bookingId)
         {
             VillaBookingModel bookingVillaModel = new VillaBookingModel();
@@ -348,159 +400,8 @@ namespace WhiteLagoon.Controllers
             {
                 args.CharacterFormat.TextColor = Syncfusion.Drawing.Color.DarkBlue;
             }
-
         }
 
-        #region API CALLS
-
-        [HttpGet]
-        public IActionResult GetAll(string status = "")
-        {
-            IEnumerable<BookingDetail> objBookings;
-
-
-            if (User.IsInRole(SD.Role_Admin))
-            {
-                objBookings = _unitOfWork.Booking.GetAll(includeProperties: "User,Villa").ToList();
-            }
-            else
-            {
-
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
-                var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier).Value;
-
-                objBookings = _unitOfWork.Booking
-                    .GetAll(u => u.UserId == userId, includeProperties: "User,Villa");
-            }
-
-            if (!string.IsNullOrWhiteSpace(status))
-            {
-                objBookings = objBookings.Where(u => u.Status.ToLower() == status.ToLower());
-            }
-
-            return Json(new { data = objBookings });
-        }
-
-        public List<int> AssignAvailableVillaNumberByVilla(int villaId, DateOnly checkInDate)
-        {
-            List<int> availableVillaNumbers = new List<int>();
-
-            var villaNumbers = _unitOfWork.VillaNumber.GetAll().Where(m => m.VillaId == villaId).ToList();
-
-            var checkedInVilla = _unitOfWork.Booking.GetAll().Where(m => m.Status == SD.StatusCheckedIn && m.VillaId == villaId).Select(u => u.VillaNumber);
-
-
-            foreach (var villaNumber in villaNumbers)
-            {
-                if (!checkedInVilla.Contains(villaNumber.Villa_Number))
-                {
-                    //Villa is not checked in
-                    availableVillaNumbers.Add(villaNumber.Villa_Number);
-                }
-            }
-            return availableVillaNumbers;
-        }
-        #endregion
-    }
-
-
-    public class TestOrderDetail
-    {
-        #region Fields
-
-        private string m_orderID;
-        private string m_productID;
-        private string m_productName;
-        private string m_unitPrice;
-        private string m_quantity;
-        private string m_discount;
-        private string m_extendedPrice;
-        #endregion
-
-        #region Properties
-
-        public string OrderID
-        {
-            get { return m_orderID; }
-            set { m_orderID = value; }
-        }
-
-        public string ProductID
-        {
-            get { return m_productID; }
-            set { m_productID = value; }
-        }
-        public string ProductName
-        {
-            get { return m_productName; }
-            set { m_productName = value; }
-        }
-        public string UnitPrice
-        {
-            get { return m_unitPrice; }
-            set { m_unitPrice = value; }
-        }
-        public string Quantity
-        {
-            get { return m_quantity; }
-            set { m_quantity = value; }
-        }
-        public string Discount
-        {
-            get { return m_discount; }
-            set { m_discount = value; }
-        }
-        public string ExtendedPrice
-        {
-            get { return m_extendedPrice; }
-            set { m_extendedPrice = value; }
-        }
-
-        #endregion
-
-        #region Constructor       
-        public TestOrderDetail()
-        { }
-        #endregion
-    }
-    public class TestOrderTotal
-    {
-        #region Fields
-
-        private string m_orderID;
-        private string m_subTotal;
-        private string m_freight;
-        private string m_total;
-        #endregion
-
-        #region Properties
-
-        public string OrderID
-        {
-            get { return m_orderID; }
-            set { m_orderID = value; }
-        }
-
-        public string Subtotal
-        {
-            get { return m_subTotal; }
-            set { m_subTotal = value; }
-        }
-        public string Freight
-        {
-            get { return m_freight; }
-            set { m_freight = value; }
-        }
-        public string Total
-        {
-            get { return m_total; }
-            set { m_total = value; }
-        }
-        #endregion
-
-        #region Constructor       
-        public TestOrderTotal()
-        { }
         #endregion
     }
 }

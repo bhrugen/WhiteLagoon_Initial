@@ -78,16 +78,12 @@ namespace WhiteLagoon.Controllers
                     shape = FindShapeByName(slide, "imgVilla");
                     if (shape is IShape)
                     {
-                        // Download the image as a byte array
                         byte[] imageData;
-                        using (var client = new WebClient())
-                        {
-                            imageData = client.DownloadData(villa.ImageUrl);
-                        }
+                        string imageUrl = string.Format("{0}/{1}", basePath, villa.ImageUrl);
+                        imageData = System.IO.File.ReadAllBytes(imageUrl);
+                        string fileExtension = Path.GetExtension(imageUrl);
 
-                        // Determine the image format based on the content type
-                        string imageContentType = GetImageContentType(villa.ImageUrl);
-                        if (imageContentType.Contains("image/svg+xml", StringComparison.OrdinalIgnoreCase))
+                        if (fileExtension.Contains("svg", StringComparison.OrdinalIgnoreCase))
                         {
                             // Image is in SVG format
                             // Convert the SVG image to an image format like PNG or JPEG
@@ -175,7 +171,7 @@ namespace WhiteLagoon.Controllers
             };
             return View(detailsVM);
         }
-        
+
         public IActionResult Privacy()
         {
             return View();

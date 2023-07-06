@@ -183,17 +183,6 @@ namespace WhiteLagoon.Controllers
         }
 
         #region PPT Library
-        private string GetImageContentType(string imageUrl)
-        {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(imageUrl);
-            request.Method = "HEAD";
-
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-            {
-                return response.ContentType;
-            }
-        }
-
         private byte[] ConvertSvgToPng(byte[] svgImageData)
         {
             // Load the SVG image data into an SVG document
